@@ -3,9 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static System.Math;
-using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
-using static UnityEditor.PlayerSettings;
-using static UnityEditor.Progress;
 using DATA;
 
 
@@ -47,8 +44,14 @@ public class Elliptic : Orbit
         else
             ODEMotions = new() { Diff_phi, Diff_psi, Diff_theta, Diff_pphi, Diff_ppsi, Diff_ptheta };
     }
-    internal override double H(double nu, (EulerAngles, DimensionlessPulses) motions) => 0;
-    private protected override double Diff_phi(double nu, (EulerAngles, DimensionlessPulses) motions) => r0 + Omega(nu) * Cos(motions.Item1.psi) * Sin(motions.Item1.theta) - Diff_psi(nu, motions) * Cos(motions.Item1.theta);
+    internal override double H(double nu, (EulerAngles, DimensionlessPulses) motions) => Pow(motions.Item2.ppsi, 2) / (2 * Pow(1 + e * Cos(nu), 2)
+        * Pow(Sin(motions.Item1.theta), 2)) + Pow(motions.Item2.ptheta, 2) / (2 * Pow(1 + e * Cos(nu), 2)) - (Alpha * Beta * Pow(1 - Pow(e, 2), 3d / 2)
+        * Cos(motions.Item1.theta) / (Pow(1 + e * Cos(nu), 2) * Pow(Sin(motions.Item1.theta), 2)) + Cos(motions.Item1.psi) / Tan(motions.Item1.theta))
+        * motions.Item2.ppsi - Sin(motions.Item1.psi) * motions.Item2.ptheta + Pow(Alpha, 2) * Pow(Beta, 2) * Pow(1 - Pow(e, 2), 3)
+        / (Pow(Tan(motions.Item1.theta), 2) * 2 * Pow(1 + e * Cos(nu), 2)) + Alpha * Beta * Pow(1 - Pow(e, 2), 3d / 2) * Cos(motions.Item1.psi)
+        / Sin(motions.Item1.theta) + 3 * (Alpha - 1) * (1 + e * Cos(nu)) * Pow(Cos(motions.Item1.theta), 2) / 2;
+    private protected override double Diff_phi(double nu, (EulerAngles, DimensionlessPulses) motions) => r0 + Omega(nu) * Cos(motions.Item1.psi) * Sin(motions.Item1.theta) - 
+        Diff_psi(nu, motions) * Cos(motions.Item1.theta);
     private protected double Diff_phiCylPrec(double nu, (EulerAngles, DimensionlessPulses) motions) => Omega0 * (Beta - Pow(1 + e * Cos(nu), 2) / Pow(1 - Pow(e, 2), 3d / 2));
     private protected override double Diff_psi(double nu, (EulerAngles, DimensionlessPulses) motions) => ((motions.Item2.ppsi - Alpha * Beta * Pow(1 - Pow(e, 2), 3d / 2)
         * Cos(motions.Item1.theta)) / (Pow(1 + e * Cos(nu), 2) * Sin(motions.Item1.theta)) - Cos(motions.Item1.psi) * Cos(motions.Item1.theta)) / Sin(motions.Item1.theta);
@@ -76,16 +79,16 @@ public class Elliptic : Orbit
 public class Circular : Orbit
 {
     internal double R { get; private set; }
-    public Circular(double R, double alpha, double beta, double omega0, (EulerAngles, DimensionlessPulses) startParam) : base(alpha, beta, omega0, startParam) 
+    public Circular(double R, double alpha, double r0, double omega0, (EulerAngles, DimensionlessPulses) startParam) : base(alpha, r0, omega0, startParam) 
     { 
         this.R = R;
         ODEMotions = new() { Diff_phi, Diff_psi, Diff_theta, Diff_pphi, Diff_ppsi, Diff_ptheta };
     }
 
-    internal override double H(double nu, (EulerAngles, DimensionlessPulses) motions) => (motions.Item2.ppsi * (motions.Item2.ppsi - 2 * (Cos(motions.Item1.psi) * Sin(motions.Item1.theta) +
-        Alpha * Beta) * Cos(motions.Item1.theta)) + (3 * (1 - Alpha)) * Pow(Cos(motions.Item1.theta), 4) + (Alpha * (Pow(Beta, 2) * (Alpha - 1) + 3) - 6) * Pow(Cos(motions.Item1.theta), 2)
-        + Alpha * Beta * (2 * Cos(motions.Item1.psi) * Sin(motions.Item1.theta) + Beta) + 3) / (2 * Pow(Sin(motions.Item1.theta), 2)) + (motions.Item2.ptheta / 2
-        - Sin(motions.Item1.psi)) * motions.Item2.ptheta;
+    internal override double H(double nu, (EulerAngles, DimensionlessPulses) motions) => (Pow(motions.Item2.ppsi / Sin(motions.Item1.theta), 2)
+        + Pow(motions.Item2.ptheta, 2)) / 2 - (Alpha * Beta / Sin(motions.Item1.theta) + Cos(motions.Item1.psi)) * motions.Item2.ppsi / Tan(motions.Item1.theta)
+        - Sin(motions.Item1.psi) * motions.Item2.ptheta + Pow(Alpha * Beta / Tan(motions.Item1.theta), 2) / 2 + Alpha * Beta
+        * Cos(motions.Item1.psi) / Sin(motions.Item1.theta) + (3 * (Alpha - 1)) * Pow(Cos(motions.Item1.theta), 2) / 2;
     private protected override double Diff_phi(double nu, (EulerAngles, DimensionlessPulses) motions) => Omega0 * (Beta + Cos(StartParam.Item1.psi) * Sin(StartParam.Item1.theta));
     private protected override double Diff_psi(double nu, (EulerAngles, DimensionlessPulses) motions) => (motions.Item2.ppsi - Alpha * Beta * Cos(motions.Item1.theta)) / Pow(Sin(motions.Item1.theta), 2)
         - Cos(motions.Item1.psi) / Tan(motions.Item1.theta);

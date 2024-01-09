@@ -4,18 +4,26 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using DATA;
+using System.Numerics;
+using Unity.VisualScripting;
 
 public class Save
 {
     private double time = 0;
-    private string Path = "C:/Users/svyatoslav/Desktop/Research work and research practice/Maple";
-    private string MethodClassic = "/Classic.txt";
-    private string Method3to8 = "/3to8.txt";
-    private string MethodFehlberg = "/Fehlberg.txt";
-    public void SaveGame(Data data, double deltaTime, int step)
+    private readonly string Path = "C:/Users/svyatoslav/Desktop/Research work and research practice/Maple";
+    private readonly string MethodClassic = "/Classic.txt";
+    private readonly string Method3to8 = "/3_8.txt";
+    private readonly string MethodFehlberg = "/Fehlberg.txt";
+    public void SaveGame(Data data, Run.ODEMethod odeMethod, double deltaTime, int step)
     {
         //string filePath = Application.dataPath + MethodFehlberg;
-        string filePath = Path + Method3to8;
+        string filePath = Path;
+        if (odeMethod == Run.ODEMethod.RungeKutta_Claccic)
+            filePath += MethodClassic;
+        else if (odeMethod == Run.ODEMethod.RungeKutta_3_8)
+            filePath += Method3to8;
+        else if (odeMethod == Run.ODEMethod.RungeKutta_Fehlberg45)
+            filePath += MethodFehlberg;
         Debug.LogWarning(filePath);
         Debug.LogWarning($"{(data.MotionsAngle.Count - 1) / step + 1}");
         /*

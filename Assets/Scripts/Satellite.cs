@@ -11,22 +11,23 @@ public class Satellite : MonoBehaviour
     [SerializeField] private Run _Run;
     [SerializeField] private Planet _Planet = null;
     [SerializeField] private double _A;
-    [SerializeField] private double b;
-    [SerializeField] private double c;
+    [SerializeField] private double _B;
+    [SerializeField] private double _C;
     [SerializeField] private double phi0;
     [SerializeField] private double psi0;
     [SerializeField] private double theta0;
     [SerializeField] private double pphi0;
     [SerializeField] private double ppsi0;
     [SerializeField] private double ptheta0;
-    [SerializeField] private double v0;
+    [SerializeField] private double _V0;
     [SerializeField] private double _r0;
     internal List<EulerAngles> Angle = new();
     internal double A { get { return _A; } }
-    internal double B { get { return b; } }
-    internal double C { get { return c; } }
-    internal double V0 { get { return v0; } }
+    internal double B { get { return _B; } }
+    internal double C { get { return _C; } }
+    internal double V0 { get { return _V0; } }
     internal double Phi0 { get { return phi0; } }
+    internal double r0 { get { return _r0; } }
     internal double Psi0
     {
         get
@@ -66,7 +67,7 @@ public class Satellite : MonoBehaviour
         get
         {
             if (_Planet.Orbit == Planet.Orbits.Elliptical)
-                return Alpha * Beta * Math.Pow((1 - _Planet.Eccentricity) / (1 + _Planet.Eccentricity), 3d / 2);
+                return Alpha * Beta * Math.Pow((1 - Math.Pow(_Planet.Eccentricity, 2)), 3d / 2);// Math.Pow((1 - _Planet.Eccentricity) / (1 + _Planet.Eccentricity), 3d / 2);
             else
                 return Alpha * Beta;
         }
@@ -84,7 +85,7 @@ public class Satellite : MonoBehaviour
                 if (_Run.regularPrecession == RegularPrecessions.Hyperboloidal)
                     return 0;
                 else
-                    return 3 * (Alpha - 1) * Math.Sin(Theta0) * Math.Cos(Theta0);
+                    return 3 * (Alpha - 1) * Alpha * Beta / (3 * Alpha - 4) * Math.Cos(Theta0);// Math.Sin(Theta0)
             }
         }
     }
@@ -126,7 +127,6 @@ public class Satellite : MonoBehaviour
         }
     }
     internal double SectorSpeed => (StartPosition * V0) / 2;
-    internal double r0 { get { return _r0; } }
     internal double r 
     { 
         get
@@ -151,7 +151,6 @@ public class Satellite : MonoBehaviour
     internal double Beta => r0 / Omega0;
 
     private double Time0 = 0;
-    private int stepFixedTime = 0;
     private int k = 0;
     private (EulerAngles, DimensionlessPulses) motion;
     private void Start()
@@ -182,11 +181,15 @@ public class Satellite : MonoBehaviour
 
         _Run.data.MotionsAngle.Add((new EulerAngles(Phi0, Psi0, Theta0), new DimensionlessPulses(Pphi0, Ppsi0, Ptheta0)));
         _Run.data.H.Add(_Planet.ClassOrbit.H(0, _Run.data.MotionsAngle[^1]));
-        stepFixedTime = (int)(0.02 / _Run.DeltaTime);
 
         for (int i = 1; i <= _Run.Nu / _Run.DeltaTime; i++)
         {
-            motion = _Run.solveDifferentialEquation.RK3to8(_Run.data.MotionsAngle[^1], _Planet.ClassOrbit.ODEMotions, Time0);
+            if (_Run.odeMethod == Run.ODEMethod.RungeKutta_Claccic)
+                motion = _Run.solveDifferentialEquation.RKClassic(_Run.data.MotionsAngle[^1], _Planet.ClassOrbit.ODEMotions, Time0);
+            else if (_Run.odeMethod == Run.ODEMethod.RungeKutta_3_8)
+                motion = _Run.solveDifferentialEquation.RK3to8(_Run.data.MotionsAngle[^1], _Planet.ClassOrbit.ODEMotions, Time0);
+            else if (_Run.odeMethod == Run.ODEMethod.RungeKutta_Fehlberg45)
+                motion = _Run.solveDifferentialEquation.RKFehlberg(_Run.data.MotionsAngle[^1], _Planet.ClassOrbit.ODEMotions, Time0);
             Time0 += _Run.DeltaTime;
             _Run.data.MotionsAngle.Add(motion);
             _Run.data.H.Add(_Planet.ClassOrbit.H(0, _Run.data.MotionsAngle[^1]));
@@ -209,14 +212,17 @@ public class Satellite : MonoBehaviour
         //        j++;
         //    Time0 += deltaTime;
         //}
-        _Run.save.SaveGame(_Run.data, 0.02, (int)(0.02 / _Run.DeltaTime));
+        _Run.save.SaveGame(_Run.data, _Run.odeMethod, 0.02, (int)(0.02 / _Run.DeltaTime));
         //Math.Round(0.019,);
     }
     private void FixedUpdate()
     {
-        LinearMotion();
-        AttitudeMotion();
-        if (Time.time > _Run.Nu)
+        if (Time.time <= _Run.Nu)
+        {
+            LinearMotion();
+            AttitudeMotion();
+        }
+        else
             EditorApplication.isPaused = true;
     }
     private void LinearMotion()

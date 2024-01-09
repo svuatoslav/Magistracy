@@ -5,7 +5,7 @@ using DATA;
 public class SolveDifferentialEquation
 {
     private double delta_t;
-    private readonly (double[,], double[], double[]) ButcherClassic = (//_A, b, c
+    private readonly (double[,], double[], double[]) ButcherClassic = (//_A, _B, _C
         new double[3, 3] { 
             { 1d / 2, 0, 0 }, 
             { 0, 1d / 2, 0 }, 
@@ -61,9 +61,7 @@ public class SolveDifferentialEquation
     {
         var k = new double[ODEMotions.Count, ODEMotions.Count];
         for (int i = 0; i < ODEMotions.Count; i++)
-        {
             k[0, i] = ODEMotions[i](t + Butcher_4thOrder[0][0] * delta_t, y);
-        }
         var y_k1 = (new EulerAngles(y.Item1.phi + Butcher_4thOrder[1][1] * k[0, 0] * delta_t,
             y.Item1.psi + Butcher_4thOrder[1][1] * k[0, 1] * delta_t,
             y.Item1.theta + Butcher_4thOrder[1][1] * k[0, 2] * delta_t), 
@@ -71,9 +69,7 @@ public class SolveDifferentialEquation
             y.Item2.ppsi + Butcher_4thOrder[1][1] * k[0, 4] * delta_t,
             y.Item2.ptheta + Butcher_4thOrder[1][1] * k[0, 5] * delta_t));
         for (int i = 0; i < ODEMotions.Count; i++)
-        {
             k[1, i] = ODEMotions[i](t + Butcher_4thOrder[1][0] * delta_t, y_k1);
-        }
         var y_k2 = (new EulerAngles(y.Item1.phi + (Butcher_4thOrder[2][1] * k[0, 0] + Butcher_4thOrder[2][2] * k[1, 0]) * delta_t,
             y.Item1.psi + (Butcher_4thOrder[2][1] * k[0, 1] + Butcher_4thOrder[2][2] * k[1, 1]) * delta_t,
             y.Item1.theta + (Butcher_4thOrder[2][1] * k[0, 2] + Butcher_4thOrder[2][2] * k[1, 2]) * delta_t),
@@ -81,9 +77,7 @@ public class SolveDifferentialEquation
             y.Item2.ppsi + (Butcher_4thOrder[2][1] * k[0, 4] + Butcher_4thOrder[2][2] * k[1, 4]) * delta_t,
             y.Item2.ptheta + (Butcher_4thOrder[2][1] * k[0, 5] + Butcher_4thOrder[2][2] * k[1, 5]) * delta_t));
         for (int i = 0; i < ODEMotions.Count; i++)
-        {
             k[2, i] = ODEMotions[i](t + Butcher_4thOrder[2][0] * delta_t, y_k2);
-        }
         var y_k3 = (new EulerAngles(y.Item1.phi + (Butcher_4thOrder[3][1] * k[0, 0] + Butcher_4thOrder[3][2] * k[1, 0] + Butcher_4thOrder[3][3] * k[2, 0]) * delta_t,
             y.Item1.psi + (Butcher_4thOrder[3][1] * k[0, 1] + Butcher_4thOrder[3][2] * k[1, 1] + Butcher_4thOrder[3][3] * k[2, 1]) * delta_t, 
             y.Item1.theta + (Butcher_4thOrder[3][1] * k[0, 2] + Butcher_4thOrder[3][2] * k[1, 2] + Butcher_4thOrder[3][3] * k[2, 2]) * delta_t),
@@ -91,9 +85,7 @@ public class SolveDifferentialEquation
             y.Item2.ppsi + (Butcher_4thOrder[3][1] * k[0, 4] + Butcher_4thOrder[3][2] * k[1, 4] + Butcher_4thOrder[3][3] * k[2, 4]) * delta_t, 
             y.Item2.ptheta + (Butcher_4thOrder[3][1] * k[0, 5] + Butcher_4thOrder[3][2] * k[1, 5] + Butcher_4thOrder[3][3] * k[2, 5]) * delta_t));
         for (int i = 0; i < ODEMotions.Count; i++)
-        {
             k[3, i] = ODEMotions[i](t + Butcher_4thOrder[3][0] * delta_t, y_k3);
-        }
         return (new EulerAngles(y.Item1.phi + delta_t * (Butcher_4thOrder[4][0] * k[0, 0] + Butcher_4thOrder[4][1] * k[1, 0] + Butcher_4thOrder[4][2] * k[2, 0] + Butcher_4thOrder[4][3] * k[3, 0]), 
             y.Item1.psi + delta_t * (Butcher_4thOrder[4][0] * k[0, 1] + Butcher_4thOrder[4][1] * k[1, 1] + Butcher_4thOrder[4][2] * k[2, 1] + Butcher_4thOrder[4][3] * k[3, 1]), 
             y.Item1.theta + delta_t * (Butcher_4thOrder[4][0] * k[0, 2] + Butcher_4thOrder[4][1] * k[1, 2] + Butcher_4thOrder[4][2] * k[2, 2] + Butcher_4thOrder[4][3] * k[3, 2])),
@@ -105,9 +97,7 @@ public class SolveDifferentialEquation
     {
         var k = new double[4, ODEMotions.Count];
         for (int i = 0; i < ODEMotions.Count; i++)
-        {
             k[0, i] = ODEMotions[i](t + Butcher_4thOrder3to8[0][0] * delta_t, y);
-        }
         var y_k1 = (new EulerAngles(y.Item1.phi + Butcher_4thOrder3to8[1][1] * k[0, 0] * delta_t,
             y.Item1.psi + Butcher_4thOrder3to8[1][1] * k[0, 1] * delta_t,
             y.Item1.theta + Butcher_4thOrder3to8[1][1] * k[0, 2] * delta_t),
@@ -115,9 +105,7 @@ public class SolveDifferentialEquation
             y.Item2.ppsi + Butcher_4thOrder3to8[1][1] * k[0, 4] * delta_t, 
             y.Item2.ptheta + Butcher_4thOrder3to8[1][1] * k[0, 5] * delta_t));
         for (int i = 0; i < ODEMotions.Count; i++)
-        {
             k[1, i] = ODEMotions[i](t + Butcher_4thOrder3to8[1][0] * delta_t, y_k1);
-        }
         var y_k2 = (new EulerAngles(y.Item1.phi + (Butcher_4thOrder3to8[2][1] * k[0, 0] + Butcher_4thOrder3to8[2][2] * k[1, 0]) * delta_t,
             y.Item1.psi + (Butcher_4thOrder3to8[2][1] * k[0, 1] + Butcher_4thOrder3to8[2][2] * k[1, 1]) * delta_t,
             y.Item1.theta + (Butcher_4thOrder3to8[2][1] * k[0, 2] + Butcher_4thOrder3to8[2][2] * k[1, 2]) * delta_t),
@@ -125,9 +113,7 @@ public class SolveDifferentialEquation
             y.Item2.ppsi + (Butcher_4thOrder3to8[2][1] * k[0, 4] + Butcher_4thOrder3to8[2][2] * k[1, 4]) * delta_t,
             y.Item2.ptheta + (Butcher_4thOrder3to8[2][1] * k[0, 5] + Butcher_4thOrder3to8[2][2] * k[1, 5]) * delta_t));
         for (int i = 0; i < ODEMotions.Count; i++)
-        {
             k[2, i] = ODEMotions[i](t + Butcher_4thOrder3to8[2][0] * delta_t, y_k2);
-        }
         var y_k3 = (new EulerAngles(y.Item1.phi + (Butcher_4thOrder3to8[3][1] * k[0, 0] + Butcher_4thOrder3to8[3][2] * k[1, 0] + Butcher_4thOrder3to8[3][3] * k[2, 0]) * delta_t,
             y.Item1.psi + (Butcher_4thOrder3to8[3][1] * k[0, 1] + Butcher_4thOrder3to8[3][2] * k[1, 1] + Butcher_4thOrder3to8[3][3] * k[2, 1]) * delta_t,
             y.Item1.theta + (Butcher_4thOrder3to8[3][1] * k[0, 2] + Butcher_4thOrder3to8[3][2] * k[1, 2] + Butcher_4thOrder3to8[3][3] * k[2, 2]) * delta_t),
@@ -135,9 +121,7 @@ public class SolveDifferentialEquation
             y.Item2.ppsi + (Butcher_4thOrder3to8[3][1] * k[0, 4] + Butcher_4thOrder3to8[3][2] * k[1, 4] + Butcher_4thOrder3to8[3][3] * k[2, 4]) * delta_t,
             y.Item2.ptheta + (Butcher_4thOrder3to8[3][1] * k[0, 5] + Butcher_4thOrder3to8[3][2] * k[1, 5] + Butcher_4thOrder3to8[3][3] * k[2, 5]) * delta_t));
         for (int i = 0; i < ODEMotions.Count; i++)
-        {
             k[3, i] = ODEMotions[i](t + Butcher_4thOrder3to8[3][0] * delta_t, y_k3);
-        }
         return (new EulerAngles(y.Item1.phi + delta_t * (Butcher_4thOrder3to8[4][0] * k[0, 0] + Butcher_4thOrder3to8[4][1] * k[1, 0] + Butcher_4thOrder3to8[4][2] * k[2, 0] + Butcher_4thOrder3to8[4][3] * k[3, 0]),
             y.Item1.psi + delta_t * (Butcher_4thOrder3to8[4][0] * k[0, 1] + Butcher_4thOrder3to8[4][1] * k[1, 1] + Butcher_4thOrder3to8[4][2] * k[2, 1] + Butcher_4thOrder3to8[4][3] * k[3, 1]),
             y.Item1.theta + delta_t * (Butcher_4thOrder3to8[4][0] * k[0, 2] + Butcher_4thOrder3to8[4][1] * k[1, 2] + Butcher_4thOrder3to8[4][2] * k[2, 2] + Butcher_4thOrder3to8[4][3] * k[3, 2])),
@@ -145,13 +129,11 @@ public class SolveDifferentialEquation
             y.Item2.ppsi + delta_t * (Butcher_4thOrder3to8[4][0] * k[0, 4] + Butcher_4thOrder3to8[4][1] * k[1, 4] + Butcher_4thOrder3to8[4][2] * k[2, 4] + Butcher_4thOrder3to8[4][3] * k[3, 4]),
             y.Item2.ptheta + delta_t * (Butcher_4thOrder3to8[4][0] * k[0, 5] + Butcher_4thOrder3to8[4][1] * k[1, 5] + Butcher_4thOrder3to8[4][2] * k[2, 5] + Butcher_4thOrder3to8[4][3] * k[3, 5])));
     }
-    internal (EulerAngles, DimensionlessPulses) RKFehlberg((EulerAngles, DimensionlessPulses) y, List<Func<double, (EulerAngles, DimensionlessPulses), double>> ODEMotions, double t, double delta_t)
+    internal (EulerAngles, DimensionlessPulses) RKFehlberg((EulerAngles, DimensionlessPulses) y, List<Func<double, (EulerAngles, DimensionlessPulses), double>> ODEMotions, double t)
     {
         var k = new double[6, ODEMotions.Count];
         for (int i = 0; i < ODEMotions.Count; i++)
-        {
             k[0, i] = ODEMotions[i](t + Butcher_Fehlberg[0][0] * delta_t, y);
-        }
         var y_k1 = (new EulerAngles(y.Item1.phi + Butcher_Fehlberg[1][1] * k[0, 0] * delta_t,
             y.Item1.psi + Butcher_Fehlberg[1][1] * k[0, 1] * delta_t,
             y.Item1.theta + Butcher_Fehlberg[1][1] * k[0, 2] * delta_t),
@@ -159,9 +141,7 @@ public class SolveDifferentialEquation
             y.Item2.ppsi + Butcher_Fehlberg[1][1] * k[0, 4] * delta_t, 
             y.Item2.ptheta + Butcher_Fehlberg[1][1] * k[0, 5] * delta_t));
         for (int i = 0; i < ODEMotions.Count; i++)
-        {
             k[1, i] = ODEMotions[i](t + Butcher_Fehlberg[1][0] * delta_t, y_k1);
-        }
         var y_k2 = (new EulerAngles(y.Item1.phi + (Butcher_Fehlberg[2][1] * k[0, 0] + Butcher_Fehlberg[2][2] * k[1, 0]) * delta_t,
             y.Item1.psi + (Butcher_Fehlberg[2][1] * k[0, 1] + Butcher_Fehlberg[2][2] * k[1, 1]) * delta_t,
             y.Item1.theta + (Butcher_Fehlberg[2][1] * k[0, 2] + Butcher_Fehlberg[2][2] * k[1, 2]) * delta_t),
@@ -169,9 +149,7 @@ public class SolveDifferentialEquation
             y.Item2.ppsi + (Butcher_Fehlberg[2][1] * k[0, 4] + Butcher_Fehlberg[2][2] * k[1, 4]) * delta_t,
             y.Item2.ptheta + (Butcher_Fehlberg[2][1] * k[0, 5] + Butcher_Fehlberg[2][2] * k[1, 5]) * delta_t));
         for (int i = 0; i < ODEMotions.Count; i++)
-        {
             k[2, i] = ODEMotions[i](t + Butcher_Fehlberg[2][0] * delta_t, y_k2);
-        }
         var y_k3 = (new EulerAngles(y.Item1.phi + (Butcher_Fehlberg[3][1] * k[0, 0] + Butcher_Fehlberg[3][2] * k[1, 0] + Butcher_Fehlberg[3][3] * k[2, 0]) * delta_t,
             y.Item1.psi + (Butcher_Fehlberg[3][1] * k[0, 1] + Butcher_Fehlberg[3][2] * k[1, 1] + Butcher_Fehlberg[3][3] * k[2, 1]) * delta_t,
             y.Item1.theta + (Butcher_Fehlberg[3][1] * k[0, 2] + Butcher_Fehlberg[3][2] * k[1, 2] + Butcher_Fehlberg[3][3] * k[2, 2]) * delta_t),
@@ -179,9 +157,7 @@ public class SolveDifferentialEquation
             y.Item2.ppsi + (Butcher_Fehlberg[3][1] * k[0, 4] + Butcher_Fehlberg[3][2] * k[1, 4] + Butcher_Fehlberg[3][3] * k[2, 4]) * delta_t,
             y.Item2.ptheta + (Butcher_Fehlberg[3][1] * k[0, 5] + Butcher_Fehlberg[3][2] * k[1, 5] + Butcher_Fehlberg[3][3] * k[2, 5]) * delta_t));
         for (int i = 0; i < ODEMotions.Count; i++)
-        {
             k[3, i] = ODEMotions[i](t + Butcher_Fehlberg[3][0] * delta_t, y_k3);
-        }
         var y_k4 = (new EulerAngles(y.Item1.phi + (Butcher_Fehlberg[4][1] * k[0, 0] + Butcher_Fehlberg[4][2] * k[1, 0] + Butcher_Fehlberg[4][3] * k[2, 0] + Butcher_Fehlberg[4][4] * k[3, 0]) * delta_t,
             y.Item1.psi + (Butcher_Fehlberg[4][1] * k[0, 1] + Butcher_Fehlberg[4][2] * k[1, 1] + Butcher_Fehlberg[4][3] * k[2, 1] + Butcher_Fehlberg[4][4] * k[3, 1]) * delta_t,
             y.Item1.theta + (Butcher_Fehlberg[4][1] * k[0, 2] + Butcher_Fehlberg[4][2] * k[1, 2] + Butcher_Fehlberg[4][3] * k[2, 2] + Butcher_Fehlberg[4][4] * k[3, 2]) * delta_t),
@@ -190,9 +166,7 @@ public class SolveDifferentialEquation
             y.Item2.ptheta + (Butcher_Fehlberg[4][1] * k[0, 5] + Butcher_Fehlberg[4][2] * k[1, 5] + Butcher_Fehlberg[4][3] * k[2, 5] + Butcher_Fehlberg[4][4] * k[3, 5]) * delta_t));
         
         for (int i = 0; i < ODEMotions.Count; i++)
-        {
             k[4, i] = ODEMotions[i](t + Butcher_Fehlberg[4][0] * delta_t, y_k4);
-        }
         var y_k5 = (new EulerAngles(y.Item1.phi + (Butcher_Fehlberg[5][1] * k[0, 0] + Butcher_Fehlberg[5][2] * k[1, 0] + Butcher_Fehlberg[5][3] * k[2, 0] + Butcher_Fehlberg[5][4] * k[3, 0] + Butcher_Fehlberg[5][5] * k[4, 0]) * delta_t,
             y.Item1.psi + (Butcher_Fehlberg[5][1] * k[0, 1] + Butcher_Fehlberg[5][2] * k[1, 1] + Butcher_Fehlberg[5][3] * k[2, 1] + Butcher_Fehlberg[5][4] * k[3, 1] + Butcher_Fehlberg[5][5] * k[4, 1]) * delta_t,
             y.Item1.theta + (Butcher_Fehlberg[5][1] * k[0, 2] + Butcher_Fehlberg[5][2] * k[1, 2] + Butcher_Fehlberg[5][3] * k[2, 2] + Butcher_Fehlberg[5][4] * k[3, 2] + Butcher_Fehlberg[5][5] * k[4, 2]) * delta_t),
@@ -200,9 +174,7 @@ public class SolveDifferentialEquation
             y.Item2.ppsi + (Butcher_Fehlberg[5][1] * k[0, 4] + Butcher_Fehlberg[5][2] * k[1, 4] + Butcher_Fehlberg[5][3] * k[2, 4] + Butcher_Fehlberg[5][4] * k[3, 4] + Butcher_Fehlberg[5][5] * k[4, 4]) * delta_t,
             y.Item2.ptheta + (Butcher_Fehlberg[5][1] * k[0, 5] + Butcher_Fehlberg[5][2] * k[1, 5] + Butcher_Fehlberg[5][3] * k[2, 5] + Butcher_Fehlberg[5][4] * k[3, 5] + Butcher_Fehlberg[5][5] * k[4, 5]) * delta_t));
         for (int i = 0; i < ODEMotions.Count; i++)
-        {
             k[5, i] = ODEMotions[i](t + Butcher_Fehlberg[5][0] * delta_t, y_k5);
-        }
         return (new EulerAngles(y.Item1.phi + (Butcher_Fehlberg[6][0] * k[0, 0] + Butcher_Fehlberg[6][1] * k[1, 0] + Butcher_Fehlberg[6][2] * k[2, 0] + Butcher_Fehlberg[6][3] * k[3, 0] + Butcher_Fehlberg[6][4] * k[4, 0] + Butcher_Fehlberg[6][5] * k[5, 0]) * delta_t,
             y.Item1.psi + (Butcher_Fehlberg[6][0] * k[0, 1] + Butcher_Fehlberg[6][1] * k[1, 1] + Butcher_Fehlberg[6][2] * k[2, 1] + Butcher_Fehlberg[6][3] * k[3, 1] + Butcher_Fehlberg[6][4] * k[4, 1] + Butcher_Fehlberg[6][5] * k[5, 1]) * delta_t,
             y.Item1.theta + (Butcher_Fehlberg[6][0] * k[0, 2] + Butcher_Fehlberg[6][1] * k[1, 2] + Butcher_Fehlberg[6][2] * k[2, 2] + Butcher_Fehlberg[6][3] * k[3, 2] + Butcher_Fehlberg[6][4] * k[4, 2] + Butcher_Fehlberg[6][5] * k[5, 2]) * delta_t),

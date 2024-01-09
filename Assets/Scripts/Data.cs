@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using UnityEditor;
 using UnityEngine;
 using static System.Math;
 namespace DATA
@@ -130,11 +131,22 @@ namespace DATA
             double alpha, beta, gamma;
             double betaSin, betaCos, gammaSin, gammaCos;
             alpha = Asin(Sin(value.theta) * Cos(value.phi));
-            betaSin = Sin(value.theta) * Sin(value.phi) / Sqrt(1 - Sin(value.theta) * Sin(value.theta) * Cos(value.phi) * Cos(value.phi));
-            betaCos = Cos(value.theta) / Sqrt(1 - Sin(value.theta) * Sin(value.theta) * Cos(value.phi) * Cos(value.phi));
+            if (Sqrt(1 - Pow(Sin(value.theta) * Cos(value.phi), 2)) == 0)
+            {
+                Debug.LogError($"Не удалось перевести в Углы Эйлера используемых в Unity\nЗнаменатель Sqrt(1 - ((Sin(value.theta) * Cos(value.phi)) ^ 2) = 0 при {value}");
+                betaSin = Sin(value.phi) * Sin(value.theta) / double.Epsilon;
+                betaCos = Cos(value.theta) / double.Epsilon;
+                gammaSin = (Sin(value.phi) * Cos(value.psi) + Cos(value.phi) * Sin(value.psi) * Cos(value.theta)) / double.Epsilon;
+                gammaCos = (Cos(value.phi) * Cos(value.psi) * Cos(value.theta) - Sin(value.phi) * Sin(value.psi)) / double.Epsilon;
+            }
+            else
+            {
+                betaSin = Sin(value.phi) * Sin(value.theta) / Sqrt(1 - Pow(Sin(value.theta) * Cos(value.phi), 2));
+                betaCos = Cos(value.theta) / Sqrt(1 - Pow(Sin(value.theta) * Cos(value.phi), 2));
+                gammaSin = (Sin(value.phi) * Cos(value.psi) + Cos(value.phi) * Sin(value.psi) * Cos(value.theta)) / Sqrt(1 - Pow(Sin(value.theta) * Cos(value.phi), 2));
+                gammaCos = (Cos(value.phi) * Cos(value.psi) * Cos(value.theta) - Sin(value.phi) * Sin(value.psi)) / Sqrt(1 - Pow(Sin(value.theta) * Cos(value.phi), 2));
+            }
             beta = Atan2(betaSin, betaCos);
-            gammaSin = (Cos(value.psi) * Sin(value.phi) + Sin(value.psi) * Cos(value.theta) * Cos(value.phi)) / Sqrt(1 - Sin(value.theta) * Sin(value.theta) * Cos(value.phi) * Cos(value.phi));
-            gammaCos = (Cos(value.psi) * Cos(value.theta) * Cos(value.phi) - Sin(value.psi) * Sin(value.phi)) / Sqrt(1 - Sin(value.theta) * Sin(value.theta) * Cos(value.phi) * Cos(value.phi));
             gamma = Atan2(gammaSin, gammaCos);
             return new EulerAngles(alpha, beta, gamma);
         }

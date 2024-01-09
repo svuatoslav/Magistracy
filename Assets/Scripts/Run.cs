@@ -10,11 +10,12 @@ public class Run : MonoBehaviour
     [SerializeField] private GameObject Planet = null;
     [SerializeField] private GameObject Satellite = null;
     [SerializeField] private RegularPrecessions _RegularPrecession;
-    [SerializeField] private ODEMethod methods = ODEMethod.RungeKutta3to8;
+    [SerializeField] private ODEMethod methods = ODEMethod.RungeKutta_3_8;
     [SerializeField] private int nu = 90;
     [SerializeField] private double MydeltaTime = 0.02;
     internal int Nu {  get { return nu; } }
     internal double DeltaTime { get { return MydeltaTime; } }
+    internal ODEMethod odeMethod { get { return methods; } }
     internal RegularPrecessions regularPrecession { get { return _RegularPrecession; } }
 
     internal Save save;
@@ -31,10 +32,10 @@ public class Run : MonoBehaviour
     }
     public enum ODEMethod
     {
-        RungeKuttaClaccic,
-        RungeKutta3to8,
-        RungeKuttaFehlberg45,
-        RungeKuttaDormandPrince45,
-        //RungeKuttaDormandPrince78,
+        RungeKutta_Claccic,
+        RungeKutta_3_8,
+        RungeKutta_Fehlberg45,
+        RungeKutta_DormandPrince_45,
+        RungeKutta_DormandPrince78,
     }
 }

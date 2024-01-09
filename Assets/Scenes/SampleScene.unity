@@ -324,9 +324,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Planet: {fileID: 1671294303}
   Satellite: {fileID: 1929055432}
-  _RegularPrecession: 1
+  _RegularPrecession: 0
   methods: 1
-  nu: 90
+  nu: 360
   MydeltaTime: 0.001
 --- !u!1 &1671294303
 GameObject:
@@ -676,10 +676,15 @@ MonoBehaviour:
   _Run: {fileID: 963194229}
   _Planet: {fileID: 1671294308}
   _A: 1.21
-  b: 1.21
-  c: 0.46
-  phi0: 10
-  v0: 6
+  _B: 1.21
+  _C: 0.46
+  phi0: 0
+  psi0: 0
+  theta0: 1
+  pphi0: 0
+  ppsi0: 1
+  ptheta0: 0.2
+  _V0: 5
   _r0: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

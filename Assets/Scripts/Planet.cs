@@ -33,7 +33,7 @@ public class Planet : MonoBehaviour
         }
         else
         {
-            ClassOrbit = new Circular(Satellite.StartPosition, Satellite.Alpha, Satellite.Beta, Satellite.Omega0, (new EulerAngles(Satellite.Phi0, Satellite.Psi0, Satellite.Theta0),
+            ClassOrbit = new Circular(Satellite.StartPosition, Satellite.Alpha, Satellite.r0, Satellite.Omega0, (new EulerAngles(Satellite.Phi0, Satellite.Psi0, Satellite.Theta0),
                 new DimensionlessPulses(Satellite.Pphi0, Satellite.Ppsi0, Satellite.Ptheta0)));
         }
         lineRenderer.SetPositions(ClassOrbit.DrawOrbit(1));
