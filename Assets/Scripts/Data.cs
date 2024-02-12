@@ -22,7 +22,8 @@ namespace DATA
     {
         Cylindrical,
         Hyperboloidal,
-        Conical
+        Conical,
+        MyParametrs
     }
     [Serializable]
     public struct EulerAngles : IEquatable<EulerAngles>, IFormattable

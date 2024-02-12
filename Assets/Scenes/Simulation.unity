@@ -324,9 +324,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Planet: {fileID: 1671294303}
   Satellite: {fileID: 1929055432}
-  _RegularPrecession: 0
+  _RegularPrecession: 3
   methods: 1
-  nu: 360
+  timeEnd: 3600
   MydeltaTime: 0.001
 --- !u!1 &1671294303
 GameObject:
@@ -343,7 +343,7 @@ GameObject:
   - component: {fileID: 1671294308}
   - component: {fileID: 1671294309}
   m_Layer: 0
-  m_Name: Earth
+  m_Name: Planet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

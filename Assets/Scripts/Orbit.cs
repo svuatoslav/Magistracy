@@ -26,7 +26,7 @@ abstract public class Orbit
     private protected abstract double Diff_pphi(double nu, (EulerAngles, DimensionlessPulses) motions);
     private protected abstract double Diff_ppsi(double nu, (EulerAngles, DimensionlessPulses) motions);
     private protected abstract double Diff_ptheta(double nu, (EulerAngles, DimensionlessPulses) motions);
-    //internal abstract double Omega(double nu);
+    //internal abstract double Omega(double timeEnd);
     internal abstract Vector3[] DrawOrbit(double deltaTime);
 }
 public class Elliptic : Orbit
@@ -44,6 +44,7 @@ public class Elliptic : Orbit
         else
             ODEMotions = new() { Diff_phi, Diff_psi, Diff_theta, Diff_pphi, Diff_ppsi, Diff_ptheta };
     }
+    public static double EtoNu(double E, double e) => 2 * Atan(Sqrt((1 + e) / (1 - e)) * Tan(E / 2));
     internal override double H(double nu, (EulerAngles, DimensionlessPulses) motions) => Pow(motions.Item2.ppsi, 2) / (2 * Pow(1 + e * Cos(nu), 2)
         * Pow(Sin(motions.Item1.theta), 2)) + Pow(motions.Item2.ptheta, 2) / (2 * Pow(1 + e * Cos(nu), 2)) - (Alpha * Beta * Pow(1 - Pow(e, 2), 3d / 2)
         * Cos(motions.Item1.theta) / (Pow(1 + e * Cos(nu), 2) * Pow(Sin(motions.Item1.theta), 2)) + Cos(motions.Item1.psi) / Tan(motions.Item1.theta))

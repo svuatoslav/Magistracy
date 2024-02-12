@@ -20,6 +20,7 @@ public class Planet : MonoBehaviour
     internal Orbits Orbit { get { return orbit; } }
     internal double StartPosition => (Satellite.p * Eccentricity) / (1 - Math.Pow(Eccentricity, 2));
     internal double R => transform.localScale.x / 2;
+    internal double n => Math.Sqrt(g*Math.Pow(R,2)/Math.Pow(Satellite.p / (1 - Math.Pow(Eccentricity, 2)), 3));
     private void Awake()
     {
         lineRenderer = transform.GetComponent<LineRenderer>();
@@ -37,11 +38,6 @@ public class Planet : MonoBehaviour
                 new DimensionlessPulses(Satellite.Pphi0, Satellite.Ppsi0, Satellite.Ptheta0)));
         }
         lineRenderer.SetPositions(ClassOrbit.DrawOrbit(1));
-    }
-
-    private void Start()
-    {
-
     }
     public enum Orbits
     {

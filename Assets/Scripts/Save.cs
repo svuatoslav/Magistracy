@@ -31,17 +31,17 @@ public class Save
         {
             foreach (var motionsAngle in data.MotionsAngle)
             {
-                sw1.Write($"{(float)time}\nu".Replace(",", "."));
-                sw1.Write($"{(float)motionsAngle.Item1.phi}\nu".Replace(",", "."));
-                sw1.Write($"{(float)motionsAngle.Item1.psi}\nu".Replace(",", "."));
-                sw1.Write($"{(float)motionsAngle.Item1.theta}\nu".Replace(",", "."));
-                sw1.Write($"{(float)motionsAngle.Item2.pphi}\nu".Replace(",", "."));
-                sw1.Write($"{(float)motionsAngle.Item2.ppsi}\nu".Replace(",", "."));
-                sw1.WriteLine($"{(float)motionsAngle.Item2.ptheta}\nu".Replace(",", "."));
-                time = Math.Round(time + deltaTime, 3);
+                sw1.Write($"{(float)timeEnd}\timeEnd".Replace(",", "."));
+                sw1.Write($"{(float)motionsAngle.Item1.phi}\timeEnd".Replace(",", "."));
+                sw1.Write($"{(float)motionsAngle.Item1.psi}\timeEnd".Replace(",", "."));
+                sw1.Write($"{(float)motionsAngle.Item1.theta}\timeEnd".Replace(",", "."));
+                sw1.Write($"{(float)motionsAngle.Item2.pphi}\timeEnd".Replace(",", "."));
+                sw1.Write($"{(float)motionsAngle.Item2.ppsi}\timeEnd".Replace(",", "."));
+                sw1.WriteLine($"{(float)motionsAngle.Item2.ptheta}\timeEnd".Replace(",", "."));
+                timeEnd = Math.Round(timeEnd + deltaTime, 3);
             }
         }
-        time = 0;
+        timeEnd = 0;
         */
         using var sw = new StreamWriter(filePath);
         for (int i = 0; i < (data.MotionsAngle.Count - 1) / step + 1; i++)

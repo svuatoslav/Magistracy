@@ -1,34 +1,11 @@
 using System;
 using System.Collections.Generic;
 using DATA;
+using UnityEngine;
 
 public class SolveDifferentialEquation
 {
     private double delta_t;
-    private readonly (double[,], double[], double[]) ButcherClassic = (//_A, _B, _C
-        new double[3, 3] { 
-            { 1d / 2, 0, 0 }, 
-            { 0, 1d / 2, 0 }, 
-            { 0, 0, 1 } },
-        new double[4] { 0, 1d / 2, 1d / 2, 1 },
-        new double[4] { 1d / 6, 1d / 3, 1d / 3, 1d / 6 });
-    private readonly (double[,], double[], double[]) Butcher3to8 = (
-        new double[3, 3] { 
-            { 1d / 3, 0, 0 }, 
-            { -1d / 3, 1, 0 }, 
-            { 1, -1, 1 } },
-        new double[4] { 0, 1d / 3, 2d / 3, 1 },
-        new double[4] { 1d / 8, 3d / 8, 3d / 8, 1d / 8 });
-    private readonly (double[,], double[,], double[]) ButcherFehlberg45 = (
-        new double[5, 5] {
-            { 1d / 4, 0, 0, 0, 0 },
-            { 3d / 32, 9d / 32, 0, 0, 0 },
-            { 1932d / 2197, -7200d / 2197, 7296d / 2197, 0, 0 },
-            { 439d / 216, -8, 3680d / 513, -845d / 4104, 0 },
-            { -8d / 27, 2, -3544d / 2565, 1859d / 4104, -11d / 40 } },
-        new double[2, 6] { { 0, 1d / 4, 3d / 8, 12d / 13, 1, 1d / 2 }, { 16d / 135, 0, 6656d / 12825, 28561d / 56430, -9d / 50, 2d / 55 } },
-        new double[6] { 25d / 216, 0, 1408d / 2565, 2197d / 4104, -1d / 5, 0 });
-    private readonly double[] ControlMemberFehlberg45 = new double[6] { 1d / 360, 0, -128d / 4275, -2197d / 75240, 1d / 50, 2d / 55 };
     private readonly double[][] Butcher_4thOrder = {
         new double[] { 0 },
         new double[] { 1d / 2, 1d / 2 },
@@ -56,6 +33,32 @@ public class SolveDifferentialEquation
     public SolveDifferentialEquation(double delta_t)
     {
         this.delta_t = delta_t;
+    }
+    public (EulerAngles, DimensionlessPulses)[] RKCalculate(double[] nu, double delta_t)
+    {
+        (EulerAngles, DimensionlessPulses)[] result = new (EulerAngles, DimensionlessPulses)[nu.Length];
+
+        //_Run.data.MotionsAngle.Add((new EulerAngles(Phi0, Psi0, Theta0), new DimensionlessPulses(Pphi0, Ppsi0, Ptheta0)));
+        //_Run.data.H.Add(_Planet.ClassOrbit.H(0, _Run.data.MotionsAngle[^1]));
+
+        //for (int i = 1; i <= (int)Math.Round(_Run.TimeEnd / _Run.DeltaTime, 0); i++)
+        //{
+        //    if (_Run.odeMethod == Run.ODEMethod.RungeKutta_Claccic)
+        //        motion = _Run.solveDifferentialEquation.RKClassic(_Run.data.MotionsAngle[^1], _Planet.ClassOrbit.ODEMotions, Time0);
+        //    else if (_Run.odeMethod == Run.ODEMethod.RungeKutta_3_8)
+        //        motion = _Run.solveDifferentialEquation.RK3to8(_Run.data.MotionsAngle[^1], _Planet.ClassOrbit.ODEMotions, Time0);
+        //    else if (_Run.odeMethod == Run.ODEMethod.RungeKutta_Fehlberg45)
+        //        motion = _Run.solveDifferentialEquation.RKFehlberg(_Run.data.MotionsAngle[^1], _Planet.ClassOrbit.ODEMotions, Time0);
+        //    Time0 += _Run.DeltaTime;
+        //    _Run.data.MotionsAngle.Add(motion);
+        //    _Run.data.H.Add(_Planet.ClassOrbit.H(0, _Run.data.MotionsAngle[^1]));
+        //}
+        for (int i = 0; i < nu.Length; i++)
+        {
+
+        }
+        this.delta_t = delta_t;
+        return result;
     }
     internal (EulerAngles, DimensionlessPulses) RKClassic((EulerAngles, DimensionlessPulses) y, List<Func<double, (EulerAngles, DimensionlessPulses), double>> ODEMotions, double t)
     {
@@ -182,4 +185,33 @@ public class SolveDifferentialEquation
             y.Item2.ppsi + (Butcher_Fehlberg[6][0] * k[0, 4] + Butcher_Fehlberg[6][1] * k[1, 4] + Butcher_Fehlberg[6][2] * k[2, 4] + Butcher_Fehlberg[6][3] * k[3, 4] + Butcher_Fehlberg[6][4] * k[4, 4] + Butcher_Fehlberg[6][5] * k[5, 4]) * delta_t,
             y.Item2.ptheta + (Butcher_Fehlberg[6][0] * k[0, 5] + Butcher_Fehlberg[6][1] * k[1, 5] + Butcher_Fehlberg[6][2] * k[2, 5] + Butcher_Fehlberg[6][3] * k[3, 5] + Butcher_Fehlberg[6][4] * k[4, 5] + Butcher_Fehlberg[6][5] * k[5, 5]) * delta_t));
     }
+}
+public class Runge_Kutta : SolveDifferentialEquation
+{
+    public Runge_Kutta(double delta_t) : base(delta_t) { }
+    private readonly (double[,], double[], double[]) ButcherClassic = (//_A, _B, _C
+        new double[3, 3] {
+            { 1d / 2, 0, 0 },
+            { 0, 1d / 2, 0 },
+            { 0, 0, 1 } },
+        new double[4] { 1d / 6, 1d / 3, 1d / 3, 1d / 6 },
+        new double[4] { 0, 1d / 2, 1d / 2, 1 });
+    private readonly (double[,], double[], double[]) Butcher3to8 = (
+        new double[3, 3] {
+            { 1d / 3, 0, 0 },
+            { -1d / 3, 1, 0 },
+            { 1, -1, 1 } },
+        new double[4] { 1d / 8, 3d / 8, 3d / 8, 1d / 8 },
+        new double[4] { 0, 1d / 3, 2d / 3, 1 });
+    private readonly (double[,], double[,], double[]) ButcherFehlberg45 = (
+        new double[5, 5] {
+            { 1d / 4, 0, 0, 0, 0 },
+            { 3d / 32, 9d / 32, 0, 0, 0 },
+            { 1932d / 2197, -7200d / 2197, 7296d / 2197, 0, 0 },
+            { 439d / 216, -8, 3680d / 513, -845d / 4104, 0 },
+            { -8d / 27, 2, -3544d / 2565, 1859d / 4104, -11d / 40 } },
+        new double[2, 6] { { 16d / 135, 0, 6656d / 12825, 28561d / 56430, -9d / 50, 2d / 55 }, 
+                            { 25d / 216, 0, 1408d / 2565, 2197d / 4104, -1d / 5, 0 } },
+        new double[6] { 0, 1d / 4, 3d / 8, 12d / 13, 1, 1d / 2 });
+    //private readonly double[] ControlMemberFehlberg45 = new double[6] { 1d / 360, 0, -128d / 4275, -2197d / 75240, 1d / 50, 2d / 55 };
 }

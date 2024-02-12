@@ -11,9 +11,9 @@ public class Run : MonoBehaviour
     [SerializeField] private GameObject Satellite = null;
     [SerializeField] private RegularPrecessions _RegularPrecession;
     [SerializeField] private ODEMethod methods = ODEMethod.RungeKutta_3_8;
-    [SerializeField] private int nu = 90;
+    [SerializeField] private int timeEnd = 90;
     [SerializeField] private double MydeltaTime = 0.02;
-    internal int Nu {  get { return nu; } }
+    internal int TimeEnd {  get { return timeEnd; } }
     internal double DeltaTime { get { return MydeltaTime; } }
     internal ODEMethod odeMethod { get { return methods; } }
     internal RegularPrecessions regularPrecession { get { return _RegularPrecession; } }
@@ -27,7 +27,7 @@ public class Run : MonoBehaviour
         var satellite = Satellite.GetComponent<Satellite>();
         Satellite.GetComponent<Satellite>();
         save = new Save();
-        data = new(regularPrecession);//(int)(nu / deltaTime)
+        data = new(regularPrecession);//(int)(timeEnd / deltaTime)
         solveDifferentialEquation = new(MydeltaTime);
     }
     public enum ODEMethod
