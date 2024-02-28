@@ -44,7 +44,7 @@ public class Elliptic : Orbit
         else
             ODEMotions = new() { Diff_phi, Diff_psi, Diff_theta, Diff_pphi, Diff_ppsi, Diff_ptheta };
     }
-    public static double EtoNu(double E, double e) => 2 * Atan(Sqrt((1 + e) / (1 - e)) * Tan(E / 2));
+    public static double EtoNu(double E, double e) => 2 * Atan(Sqrt((1 + e) / (1 - e)) * Tan(E / 2));//2 * Atan2(Pow(Sqrt(1 - e), 2) * Sin(E) / (1 - e * Cos(E)), (Cos(E) - e) / (1 - e * Cos(E)));
     internal override double H(double nu, (EulerAngles, DimensionlessPulses) motions) => Pow(motions.Item2.ppsi, 2) / (2 * Pow(1 + e * Cos(nu), 2)
         * Pow(Sin(motions.Item1.theta), 2)) + Pow(motions.Item2.ptheta, 2) / (2 * Pow(1 + e * Cos(nu), 2)) - (Alpha * Beta * Pow(1 - Pow(e, 2), 3d / 2)
         * Cos(motions.Item1.theta) / (Pow(1 + e * Cos(nu), 2) * Pow(Sin(motions.Item1.theta), 2)) + Cos(motions.Item1.psi) / Tan(motions.Item1.theta))

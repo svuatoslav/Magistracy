@@ -21,13 +21,13 @@ public class Satellite : MonoBehaviour
     [SerializeField] private double pphi0;
     [SerializeField] private double ppsi0;
     [SerializeField] private double ptheta0;
-    [SerializeField] private double _V0;
+    [SerializeField] private double _h;
     [SerializeField] private double _r0;
     internal List<EulerAngles> Angle = new();
     internal double A { get { return _A; } }
     internal double B { get { return _B; } }
     internal double C { get { return _C; } }
-    internal double V0 { get { return _V0; } }
+    internal double h { get { return _h; } }
     internal double Phi0 { get { return phi0; } }
     internal double r0 { get { return _r0; } }
     internal double Psi0
@@ -113,9 +113,9 @@ public class Satellite : MonoBehaviour
         get
         {
             if (_Planet.Orbit == Planet.Orbits.Elliptical)
-                return (_Planet.g * Math.Pow(_Planet.R, 2) * (1 + _Planet.Eccentricity)) / Math.Pow(V0, 2);
+                return (_Planet.g * Math.Pow(_Planet.R, 2) * (1 + _Planet.Eccentricity)) / Math.Pow(h, 2);
             else
-                return (_Planet.g * Math.Pow(_Planet.R, 2)) / Math.Pow(V0, 2);
+                return (_Planet.g * Math.Pow(_Planet.R, 2)) / Math.Pow(h, 2);
         }
     }
     internal double p
@@ -128,7 +128,7 @@ public class Satellite : MonoBehaviour
                 return StartPosition;
         }
     }
-    internal double SectorSpeed => (StartPosition * V0) / 2;
+    internal double SectorSpeed => (StartPosition * h) / 2;
     internal double r 
     { 
         get
@@ -144,9 +144,9 @@ public class Satellite : MonoBehaviour
         get
         {
             if (_Planet.Orbit == Planet.Orbits.Elliptical)
-                return Math.Pow(V0, 3) / (_Planet.g * Math.Pow(_Planet.R, 2)) * Math.Pow((1 - _Planet.Eccentricity) / (1 + _Planet.Eccentricity), 3d / 2);
+                return Math.Pow(h, 3) / (_Planet.g * Math.Pow(_Planet.R, 2)) * Math.Pow((1 - _Planet.Eccentricity) / (1 + _Planet.Eccentricity), 3d / 2);
             else
-                return Math.Pow(V0, 3) / (_Planet.g * Math.Pow(_Planet.R, 2));
+                return Math.Pow(h, 3) / (_Planet.g * Math.Pow(_Planet.R, 2));
         }
     }
     internal double Alpha => C / A;
@@ -172,12 +172,12 @@ public class Satellite : MonoBehaviour
             Debug.LogError($"|Alpha * Beta| > |3 * Alpha - 4| <=> {Math.Abs(Alpha * Beta)} > {Math.Abs(3 * Alpha - 4)} или Alpha = 4 / 3 <=> {Alpha} = {4d / 3}");
             EditorApplication.isPaused = true;
         }
-        if (V0 >= Math.Sqrt(_Planet.g * _Planet.R * (1 + _Planet.Eccentricity)))
+        if (h >= Math.Sqrt(_Planet.g * _Planet.R * (1 + _Planet.Eccentricity)))
         {
             Debug.LogError("V0 error");
             EditorApplication.isPaused = true;
         }
-        Debug.Log($"V0 = {V0} < {Math.Sqrt(_Planet.g * _Planet.R * (1 + _Planet.Eccentricity))}");
+        Debug.Log($"V0 = {h} < {Math.Sqrt(_Planet.g * _Planet.R * (1 + _Planet.Eccentricity))}");
         Debug.Log($"Omega0 = {Omega0}");
         transform.position = new Vector3((float)_Planet.StartPosition, 0, 0) + new Vector3((float)StartPosition, 0, 0);
         ///
@@ -186,7 +186,7 @@ public class Satellite : MonoBehaviour
         double[] flightTime = new double[(int)Math.Round(_Run.TimeEnd / 0.02, 0) + 1];
         for (int i = 1; i < flightTime.Length; i++)
             flightTime[i] = Math.Round(flightTime[i - 1] + 0.02,2);
-        SolveKeplerEquation solveKeplerEquation = new DecompositionDegreesEccentricity(_Planet.n, _Planet.Eccentricity);
+        SolveKeplerEquation solveKeplerEquation = new ClassicMethodSuccessiveApproximations(_Planet.n, _Planet.Eccentricity);
         double[] E = solveKeplerEquation.Calculate(3, flightTime);
         double[] nu = new double[E.Length];
         for (int i = 0; i < E.Length; i++)
