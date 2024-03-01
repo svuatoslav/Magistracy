@@ -25,7 +25,7 @@ public class Save
         else if (odeMethod == Run.ODEMethod.RungeKutta_Fehlberg45)
             filePath += MethodFehlberg;
         Debug.LogWarning(filePath);
-        Debug.LogWarning($"{(data.MotionsAngle.Count - 1) / step + 1}");
+        Debug.LogWarning($"{(data.MotionsAngle.Length - 1) / step + 1}");
         /*
         using var sw1 = new StreamWriter(filePath1);
         {
@@ -44,31 +44,31 @@ public class Save
         timeEnd = 0;
         */
         using var sw = new StreamWriter(filePath);
-        for (int i = 0; i < (data.MotionsAngle.Count - 1) / step + 1; i++)
+        for (int i = 0; i < (data.MotionsAngle.Length - 1) / step + 1; i++)
         {
             sw.Write($"{(float)time}\t".Replace(",", "."));
             time = Math.Round(time + deltaTime, 3);
         }
         sw.WriteLine();
-        for (int i = 0; i < data.MotionsAngle.Count; i += step)
+        for (int i = 0; i < data.MotionsAngle.Length; i += step)
             sw.Write($"{(float)data.MotionsAngle[i].Item1.phi}\t".Replace(",", "."));
         sw.WriteLine();
-        for (int i = 0; i < data.MotionsAngle.Count; i += step)
+        for (int i = 0; i < data.MotionsAngle.Length; i += step)
             sw.Write($"{(float)data.MotionsAngle[i].Item1.psi}\t".Replace(",", "."));
         sw.WriteLine();
-        for (int i = 0; i < data.MotionsAngle.Count; i += step)
+        for (int i = 0; i < data.MotionsAngle.Length; i += step)
             sw.Write($"{(float)data.MotionsAngle[i].Item1.theta}\t".Replace(",", "."));
         sw.WriteLine();
-        for (int i = 0; i < data.MotionsAngle.Count; i += step)
+        for (int i = 0; i < data.MotionsAngle.Length; i += step)
             sw.Write($"{(float)data.MotionsAngle[i].Item2.pphi}\t".Replace(",", "."));
         sw.WriteLine();
-        for (int i = 0; i < data.MotionsAngle.Count; i += step)
+        for (int i = 0; i < data.MotionsAngle.Length; i += step)
             sw.Write($"{(float)data.MotionsAngle[i].Item2.ppsi}\t".Replace(",", "."));
         sw.WriteLine();
-        for (int i = 0; i < data.MotionsAngle.Count; i++)
+        for (int i = 0; i < data.MotionsAngle.Length; i++)
             sw.Write($"{(float)data.MotionsAngle[i].Item2.ptheta}\t".Replace(",", "."));
         sw.WriteLine();
-        for (int i = 0; i < data.MotionsAngle.Count; i++)
+        for (int i = 0; i < data.MotionsAngle.Length; i++)
             sw.Write($"{(float)data.H[i]}\t".Replace(",", "."));
     }
 

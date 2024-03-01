@@ -11,8 +11,9 @@ namespace DATA
     {
         internal readonly Planet.Orbits orbit;
         internal readonly RegularPrecessions regularPrecession;
-        internal List<(EulerAngles, DimensionlessPulses)> MotionsAngle = new();
-        internal List<double> H = new();
+        internal (EulerAngles, DimensionlessPulses)[] MotionsAngle;
+        internal double[] Nu;
+        internal double[] H;
         public Data(RegularPrecessions regularPrecession)
         {
             this.regularPrecession = regularPrecession;

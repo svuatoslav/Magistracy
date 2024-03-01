@@ -27,7 +27,7 @@ abstract public class Orbit
     private protected abstract double Diff_ppsi(double nu, (EulerAngles, DimensionlessPulses) motions);
     private protected abstract double Diff_ptheta(double nu, (EulerAngles, DimensionlessPulses) motions);
     //internal abstract double Omega(double timeEnd);
-    internal abstract Vector3[] DrawOrbit(double deltaTime);
+    internal abstract Vector3[] DrawOrbit(double deltaTime, int scale);
 }
 public class Elliptic : Orbit
 {
@@ -44,7 +44,7 @@ public class Elliptic : Orbit
         else
             ODEMotions = new() { Diff_phi, Diff_psi, Diff_theta, Diff_pphi, Diff_ppsi, Diff_ptheta };
     }
-    public static double EtoNu(double E, double e) => 2 * Atan(Sqrt((1 + e) / (1 - e)) * Tan(E / 2));//2 * Atan2(Pow(Sqrt(1 - e), 2) * Sin(E) / (1 - e * Cos(E)), (Cos(E) - e) / (1 - e * Cos(E)));
+    public static double EtoNu(double E, double e) => Atan2(Pow(Sqrt(1 - e), 2) * Sin(E) / (1 - e * Cos(E)), (Cos(E) - e) / (1 - e * Cos(E))); //2 * Atan(Sqrt((1 + e) / (1 - e)) * Tan(E / 2));
     internal override double H(double nu, (EulerAngles, DimensionlessPulses) motions) => Pow(motions.Item2.ppsi, 2) / (2 * Pow(1 + e * Cos(nu), 2)
         * Pow(Sin(motions.Item1.theta), 2)) + Pow(motions.Item2.ptheta, 2) / (2 * Pow(1 + e * Cos(nu), 2)) - (Alpha * Beta * Pow(1 - Pow(e, 2), 3d / 2)
         * Cos(motions.Item1.theta) / (Pow(1 + e * Cos(nu), 2) * Pow(Sin(motions.Item1.theta), 2)) + Cos(motions.Item1.psi) / Tan(motions.Item1.theta))
@@ -67,13 +67,11 @@ public class Elliptic : Orbit
         / Sin(motions.Item1.theta) + 3 * (Alpha - 1) * (1 + e * Cos(nu)) * Sin(motions.Item1.theta)) - Cos(motions.Item1.psi) * motions.Item2.ppsi;
     private protected double Omega(double nu) => Omega0 * Pow(1 + e * Cos(nu), 2) / Pow(1 - Pow(e, 2), 3d / 2);
 
-    internal override Vector3[] DrawOrbit(double step)
+    internal override Vector3[] DrawOrbit(double step, int scale)
     {
         Vector3[] positions = new Vector3[(int)(360 / step) + 1];
         for (int i = 0; i < positions.Length; i++)
-        {
-            positions[i] = new Vector3((float)(a * Cos((i * step) * Mathf.Deg2Rad)), (float)(b * Sin((i * step) * Mathf.Deg2Rad)), 0);
-        }
+            positions[i] = new Vector3((float)((a / scale) * Cos((i * step) * Mathf.Deg2Rad)), (float)((b / scale) * Sin((i * step) * Mathf.Deg2Rad)), 0);
         return positions;
     }
 }
@@ -101,13 +99,11 @@ public class Circular : Orbit
     private protected override double Diff_ptheta(double nu, (EulerAngles, DimensionlessPulses) motions) => ((Pow(Alpha * Beta * Cos(motions.Item1.theta) - motions.Item2.ppsi, 2) / Sin(motions.Item1.theta)
         + Cos(motions.Item1.psi) * (Alpha * Beta - motions.Item2.ppsi * Cos(motions.Item1.theta))) / Tan(motions.Item1.theta) + Alpha * Beta * (Alpha * Beta * Cos(motions.Item1.theta)
         - motions.Item2.ppsi)) / Sin(motions.Item1.theta) + ((3 * (Alpha - 1)) * Sin(2 * motions.Item1.theta)) / 2 - motions.Item2.ppsi * Cos(motions.Item1.psi);
-    internal override Vector3[] DrawOrbit(double step)
+    internal override Vector3[] DrawOrbit(double step, int scale)//Scale
     {
         Vector3[] positions = new Vector3[(int)(360 / step) + 1];
         for (int i = 0; i < positions.Length; i++)
-        {
-            positions[i] = new Vector3((float)(R * Cos((i * step) * Mathf.Deg2Rad)), (float)(R * Sin((i * step) * Mathf.Deg2Rad)), 0);
-        }
+            positions[i] = new Vector3((float)((R / scale) * Cos((i * step) * Mathf.Deg2Rad)), (float)((R / scale) * Sin((i * step) * Mathf.Deg2Rad)), 0);
         return positions;
     }
 }

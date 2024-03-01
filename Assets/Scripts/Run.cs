@@ -13,7 +13,9 @@ public class Run : MonoBehaviour
     [SerializeField] private ODEMethod methods = ODEMethod.RungeKutta_3_8;
     [SerializeField] private int timeEnd = 90;
     [SerializeField] private double MydeltaTime = 0.02;
+    [SerializeField] private int _scale = 1000000;
     internal int TimeEnd {  get { return timeEnd; } }
+    internal int Scale {  get { return _scale; } }
     internal double DeltaTime { get { return MydeltaTime; } }
     internal ODEMethod odeMethod { get { return methods; } }
     internal RegularPrecessions regularPrecession { get { return _RegularPrecession; } }

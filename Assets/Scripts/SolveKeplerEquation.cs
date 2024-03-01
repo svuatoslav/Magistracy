@@ -149,6 +149,7 @@ public sealed class DecompositionDegreesEccentricity : SolveKeplerEquation
                     result[i] = E(time[i], 0);
                 break;
         }
+        return result;
         //for (int i = 0; i < result.Length; i++)
         //{
         //    result[i] = NumberApproximation switch
@@ -167,7 +168,6 @@ public sealed class DecompositionDegreesEccentricity : SolveKeplerEquation
         //        _ => E10(timeEnd[i])
         //    };
         //}
-        return result;
     }
     public override double E(double t, double En) => AlgebraicSum(t) / Pow(2, NumberApproximation);
     public override double E0(double t) => M(t);

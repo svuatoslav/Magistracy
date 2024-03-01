@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using DATA;
 using UnityEngine;
 
@@ -34,33 +35,30 @@ public class SolveDifferentialEquation
     {
         this.delta_t = delta_t;
     }
-    public (EulerAngles, DimensionlessPulses)[] RKCalculate(double[] nu, double delta_t)
+    public (EulerAngles, DimensionlessPulses)[] RKCalculate((EulerAngles, DimensionlessPulses) initialValues, double[] nu, List<Func<double, (EulerAngles, DimensionlessPulses), double>> ODEMotions)
     {
         (EulerAngles, DimensionlessPulses)[] result = new (EulerAngles, DimensionlessPulses)[nu.Length];
-
-        //_Run.data.MotionsAngle.Add((new EulerAngles(Phi0, Psi0, Theta0), new DimensionlessPulses(Pphi0, Ppsi0, Ptheta0)));
-        //_Run.data.H.Add(_Planet.ClassOrbit.H(0, _Run.data.MotionsAngle[^1]));
-
-        //for (int i = 1; i <= (int)Math.Round(_Run.TimeEnd / _Run.DeltaTime, 0); i++)
-        //{
-        //    if (_Run.odeMethod == Run.ODEMethod.RungeKutta_Claccic)
-        //        motion = _Run.solveDifferentialEquation.RKClassic(_Run.data.MotionsAngle[^1], _Planet.ClassOrbit.ODEMotions, Time0);
-        //    else if (_Run.odeMethod == Run.ODEMethod.RungeKutta_3_8)
-        //        motion = _Run.solveDifferentialEquation.RK3to8(_Run.data.MotionsAngle[^1], _Planet.ClassOrbit.ODEMotions, Time0);
-        //    else if (_Run.odeMethod == Run.ODEMethod.RungeKutta_Fehlberg45)
-        //        motion = _Run.solveDifferentialEquation.RKFehlberg(_Run.data.MotionsAngle[^1], _Planet.ClassOrbit.ODEMotions, Time0);
-        //    Time0 += _Run.DeltaTime;
-        //    _Run.data.MotionsAngle.Add(motion);
-        //    _Run.data.H.Add(_Planet.ClassOrbit.H(0, _Run.data.MotionsAngle[^1]));
-        //}
-        for (int i = 0; i < nu.Length; i++)
+        result[0] = initialValues;
+        for(int i=1; i< result.Length; i++)
         {
-
+            if (nu[i] - nu[i - 1] == delta_t)
+                result[i] = RK3to8(result[i - 1], ODEMotions, nu[i - 1], delta_t);
+            if (nu[i] - nu[i - 1] < delta_t)
+                result[i] = RK3to8(result[i - 1], ODEMotions, nu[i - 1], nu[i] - nu[i - 1]);
+            if (nu[i] - nu[i - 1] > delta_t)
+            {
+                (EulerAngles, DimensionlessPulses) temp = result[i - 1];
+                for (int j = 0; j < (nu[i] - nu[i - 1]) / delta_t; j++)
+                    temp = RK3to8(temp, ODEMotions, nu[i - 1] + delta_t * j, delta_t);//(20-10)/0.5=20//(11.2-10/0.5)=2+0.2
+                if ((nu[i] - nu[i - 1]) % delta_t != 0)
+                    result[i] = RK3to8(temp, ODEMotions, nu[i - 1] + (nu[i] - nu[i - 1]) / delta_t, (nu[i] - nu[i - 1]) % delta_t);
+                else
+                    result[i] = temp;
+            }
         }
-        this.delta_t = delta_t;
         return result;
     }
-    internal (EulerAngles, DimensionlessPulses) RKClassic((EulerAngles, DimensionlessPulses) y, List<Func<double, (EulerAngles, DimensionlessPulses), double>> ODEMotions, double t)
+    internal (EulerAngles, DimensionlessPulses) RKClassic((EulerAngles, DimensionlessPulses) y, List<Func<double, (EulerAngles, DimensionlessPulses), double>> ODEMotions, double t, double delta_t)
     {
         var k = new double[ODEMotions.Count, ODEMotions.Count];
         for (int i = 0; i < ODEMotions.Count; i++)
@@ -96,7 +94,7 @@ public class SolveDifferentialEquation
             y.Item2.ppsi + delta_t * (Butcher_4thOrder[4][0] * k[0, 4] + Butcher_4thOrder[4][1] * k[1, 4] + Butcher_4thOrder[4][2] * k[2, 4] + Butcher_4thOrder[4][3] * k[3, 4]), 
             y.Item2.ptheta + delta_t * (Butcher_4thOrder[4][0] * k[0, 5] + Butcher_4thOrder[4][1] * k[1, 5] + Butcher_4thOrder[4][2] * k[2, 5] + Butcher_4thOrder[4][3] * k[3, 5])));
     }
-    internal (EulerAngles, DimensionlessPulses) RK3to8((EulerAngles, DimensionlessPulses) y, List<Func<double, (EulerAngles, DimensionlessPulses), double>> ODEMotions, double t)
+    internal (EulerAngles, DimensionlessPulses) RK3to8((EulerAngles, DimensionlessPulses) y, List<Func<double, (EulerAngles, DimensionlessPulses), double>> ODEMotions, double t, double delta_t)
     {
         var k = new double[4, ODEMotions.Count];
         for (int i = 0; i < ODEMotions.Count; i++)
@@ -132,7 +130,7 @@ public class SolveDifferentialEquation
             y.Item2.ppsi + delta_t * (Butcher_4thOrder3to8[4][0] * k[0, 4] + Butcher_4thOrder3to8[4][1] * k[1, 4] + Butcher_4thOrder3to8[4][2] * k[2, 4] + Butcher_4thOrder3to8[4][3] * k[3, 4]),
             y.Item2.ptheta + delta_t * (Butcher_4thOrder3to8[4][0] * k[0, 5] + Butcher_4thOrder3to8[4][1] * k[1, 5] + Butcher_4thOrder3to8[4][2] * k[2, 5] + Butcher_4thOrder3to8[4][3] * k[3, 5])));
     }
-    internal (EulerAngles, DimensionlessPulses) RKFehlberg((EulerAngles, DimensionlessPulses) y, List<Func<double, (EulerAngles, DimensionlessPulses), double>> ODEMotions, double t)
+    internal (EulerAngles, DimensionlessPulses) RKFehlberg((EulerAngles, DimensionlessPulses) y, List<Func<double, (EulerAngles, DimensionlessPulses), double>> ODEMotions, double t, double delta_t)
     {
         var k = new double[6, ODEMotions.Count];
         for (int i = 0; i < ODEMotions.Count; i++)
