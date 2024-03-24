@@ -228,7 +228,6 @@ GameObject:
   - component: {fileID: 963194228}
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
-  - component: {fileID: 963194229}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -310,25 +309,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &963194229
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 963194225}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 724230e0fe8250648bb1b2cf908a69e3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Planet: {fileID: 1671294303}
-  Satellite: {fileID: 1929055432}
-  _RegularPrecession: 3
-  methods: 1
-  timeEnd: 3600
-  MydeltaTime: 0.001
-  _scale: 500000
 --- !u!1 &1671294303
 GameObject:
   m_ObjectHideFlags: 0
@@ -448,10 +428,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd20df162c347aa4aa2a7fe44159cf2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _Run: {fileID: 963194229}
-  e: 0.1
   Satellite: {fileID: 1929055437}
-  orbit: 1
 --- !u!120 &1671294309
 LineRenderer:
   serializedVersion: 2
@@ -674,19 +651,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f759c0c870c3a5347a38598e4b588b1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _Run: {fileID: 963194229}
   _Planet: {fileID: 1671294308}
-  _A: 1.21
-  _B: 1.21
-  _C: 0.46
-  phi0: 0
-  psi0: 0
-  theta0: 1
-  pphi0: 0
-  ppsi0: 1
-  ptheta0: 0.2
-  _r_min: 12742785.792
-  _r0: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

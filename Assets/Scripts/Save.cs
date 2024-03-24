@@ -14,15 +14,15 @@ public class Save
     private readonly string MethodClassic = "/Classic.txt";
     private readonly string Method3to8 = "/3_8.txt";
     private readonly string MethodFehlberg = "/Fehlberg.txt";
-    public void SaveGame(Data data, Run.ODEMethod odeMethod, double deltaTime, int step)
+    public void SaveGame(Data data, ODEMethod odeMethod, double deltaTime, int step)
     {
         //string filePath = Application.dataPath + MethodFehlberg;
         string filePath = Path;
-        if (odeMethod == Run.ODEMethod.RungeKutta_Claccic)
+        if (odeMethod == ODEMethod.RungeKutta_Claccic)
             filePath += MethodClassic;
-        else if (odeMethod == Run.ODEMethod.RungeKutta_3_8)
+        else if (odeMethod == ODEMethod.RungeKutta_3_8)
             filePath += Method3to8;
-        else if (odeMethod == Run.ODEMethod.RungeKutta_Fehlberg45)
+        else if (odeMethod == ODEMethod.RungeKutta_Fehlberg_45)
             filePath += MethodFehlberg;
         Debug.LogWarning(filePath);
         Debug.LogWarning($"{(data.MotionsAngle.Length - 1) / step + 1}");

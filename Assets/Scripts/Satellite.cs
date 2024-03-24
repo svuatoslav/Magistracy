@@ -7,108 +7,84 @@ using System.Text.RegularExpressions;
 using System;
 using UnityEngine.Windows;
 using System.Linq;
+using Unity.VisualScripting;
 
 public class Satellite : MonoBehaviour
 {
-    [SerializeField] private Run _Run;
+    [Header("ѕросо так")]
+    //[SerializeField] private Run Run;
     [SerializeField] private Planet _Planet = null;
-    [SerializeField] private double _A;
-    [SerializeField] private double _B;
-    [SerializeField] private double _C;
-    [SerializeField] private double phi0;
-    [SerializeField] private double psi0;
-    [SerializeField] private double theta0;
-    [SerializeField] private double pphi0;
-    [SerializeField] private double ppsi0;
-    [SerializeField] private double ptheta0;
-    //[SerializeField] private double _V0;
-    [SerializeField] private double _r_min;
-    [SerializeField] private double _r0;
+    //[SerializeField] private double _AB;
+    //[SerializeField] private double _C;
+    //[SerializeField] private double phi0;
+    //[SerializeField] private double psi0;
+    //[SerializeField] private double theta0;
+    //[SerializeField] private double pphi0;
+    //[SerializeField] private double ppsi0;
+    //[SerializeField] private double ptheta0;
+    ////[SerializeField] private double _V0;
+    //[SerializeField] private double _r_min;
+    //[SerializeField] private double _r0;
     internal EulerAngles[] Angle;
     private int _index = 0;
-    internal double A { get { return _A; } }
-    internal double B { get { return _B; } }
-    internal double C { get { return _C; } }
+    private int _speedTime = 1;
+    internal double AB { get { return Run.Instance.AB; } }
+    internal double C { get { return Run.Instance.C; } }
     //internal double V0 { get { return _V0; } }
-    internal double q { get { return _r_min; } }
-    internal double Phi0 { get { return phi0; } }
-    internal double r0 { get { return _r0; } }
+    internal double q { get { return Run.Instance.R + Run.Instance.Height; } }
+    internal double Phi0 { get { return Run.Instance.Phi0; } }
+    internal double r0 { get { return Run.Instance.r0; } }
     internal double Psi0
     {
         get
         {
-            if (_Run.regularPrecession == RegularPrecessions.Cylindrical)
+            if (Run.Instance.regularPrecession == RegularPrecessions.Cylindrical)
                 return Math.PI;
-            if (_Planet.Orbit == Planet.Orbits.Elliptical || _Run.regularPrecession == RegularPrecessions.MyParametrs)
-                return psi0;
+            else if (Run.Instance.regularPrecession == RegularPrecessions.Hyperboloidal)
+                return Math.Acos(-Alpha * Beta);
+            else if (Run.Instance.regularPrecession == RegularPrecessions.Conical)
+                return 0;
             else
-            {
-                if (_Run.regularPrecession == RegularPrecessions.Hyperboloidal)
-                    return Math.Acos(-Alpha * Beta);
-                else
-                    return 0;
-            }
+                return Run.Instance.Psi0;
         }
     }
     internal double Theta0
     {
         get
         {
-            if (_Run.regularPrecession == RegularPrecessions.Cylindrical)
+            if (Run.Instance.regularPrecession == RegularPrecessions.Cylindrical)
                 return Math.PI / 2;
-            if (_Planet.Orbit == Planet.Orbits.Elliptical || _Run.regularPrecession == RegularPrecessions.MyParametrs)
-                return theta0;
+            else if (Run.Instance.regularPrecession == RegularPrecessions.Hyperboloidal)
+                return Math.PI / 2;
+            else if (Run.Instance.regularPrecession == RegularPrecessions.Conical)
+                return Math.Asin(Alpha * Beta / (3 * Alpha - 4));
             else
-            {
-                if (_Run.regularPrecession == RegularPrecessions.Hyperboloidal)
-                    return Math.PI / 2;
-                else
-                    return Math.Asin(Alpha * Beta / (3 * Alpha - 4));
-            }
+                return Run.Instance.Theta0;
         }
     }
-    internal double Pphi0
-    {
-        get
-        {
-            if (_Planet.Orbit == Planet.Orbits.Elliptical)
-                return Alpha * Beta * Math.Pow((1 - Math.Pow(_Planet.Eccentricity, 2)), 3d / 2);// Math.Pow((1 - _Planet.Eccentricity) / (1 + _Planet.Eccentricity), 3d / 2);
-            else
-                return Alpha * Beta;
-        }
-    }
+    internal double Pphi0 => Alpha * Beta * Math.Pow((1 - Math.Pow(_Planet.Eccentricity, 2)), 3d / 2);
     internal double Ppsi0
     {
         get
         {
-            if (_Run.regularPrecession == RegularPrecessions.Cylindrical)
+            if (Run.Instance.regularPrecession == RegularPrecessions.Cylindrical || Run.Instance.regularPrecession == RegularPrecessions.Hyperboloidal)
                 return 0;
-            if (_Planet.Orbit == Planet.Orbits.Elliptical || _Run.regularPrecession == RegularPrecessions.MyParametrs)
-                return ppsi0;
+            else if (Run.Instance.regularPrecession == RegularPrecessions.Conical)
+                return 3 * (Alpha - 1) * (Alpha * Beta / (3 * Alpha - 4)) * Math.Cos(Theta0);
             else
-            {
-                if (_Run.regularPrecession == RegularPrecessions.Hyperboloidal)
-                    return 0;
-                else
-                    return 3 * (Alpha - 1) * Alpha * Beta / (3 * Alpha - 4) * Math.Cos(Theta0);// Math.Sin(Theta0)
-            }
+                return Run.Instance.Ppsi0;
         }
     }
     internal double Ptheta0 
     {
         get
         {
-            if (_Run.regularPrecession == RegularPrecessions.Cylindrical)
+            if (Run.Instance.regularPrecession == RegularPrecessions.Cylindrical || Run.Instance.regularPrecession == RegularPrecessions.Conical)
                 return 0;
-            if (_Planet.Orbit == Planet.Orbits.Elliptical || _Run.regularPrecession == RegularPrecessions.MyParametrs)
-                return ptheta0;
+            else if (Run.Instance.regularPrecession == RegularPrecessions.Hyperboloidal)
+                return Math.Sin(Psi0);
             else
-            {
-                if (_Run.regularPrecession == RegularPrecessions.Hyperboloidal)
-                    return Math.Sin(Psi0);
-                else
-                    return 0;
-            }
+                return Run.Instance.Ptheta0;
         }
     }
     //internal double StartPosition
@@ -121,63 +97,62 @@ public class Satellite : MonoBehaviour
     //            return (_Planet.g * Math.Pow(_Planet.R, 2)) / Math.Pow(V0, 2);
     //    }
     //}
-    internal double p
-    {
-        get
-        {
-            if (_Planet.Orbit == Planet.Orbits.Elliptical)
-                return q * (1 + _Planet.Eccentricity);
-            else
-                return q;
-            //if (_Planet.Orbit == Planet.Orbits.Elliptical)
-            //    return StartPosition * (1 + _Planet.Eccentricity);
-            //else
-            //    return StartPosition;
-        }
-    }
+    internal double p => q * (1 + _Planet.Eccentricity);
     internal double SectorSpeed => Math.Sqrt(_Planet.mu * p);//(StartPosition * V0) / 2;
-    internal double Omega0
-    {
-        get
-        {
-            if (_Planet.Orbit == Planet.Orbits.Elliptical)
-                return 2 * Math.PI * Math.Sqrt(_Planet.mu * Math.Pow((1 - _Planet.Eccentricity) / q, 3));
-            else
-                return 2 * Math.PI * Math.Sqrt(_Planet.mu / Math.Pow(q, 3));
-            //if (_Planet.Orbit == Planet.Orbits.Elliptical)
-            //    return Math.Pow(V0, 3) / (2*Math.PI*_Planet.g * Math.Pow(_Planet.R, 2)) * Math.Pow((1 - _Planet.Eccentricity) / (1 + _Planet.Eccentricity), 3d / 2);
-            //else
-            //    return Math.Pow(V0, 3) / (2*Math.PI*_Planet.g * Math.Pow(_Planet.R, 2));
-        }
-    }
-    internal double Alpha => C / A;
-    internal double Beta => r0 / Omega0;
-    private (EulerAngles, DimensionlessPulses) motion;
+    internal double Omega0 => 2 * Math.PI * Math.Sqrt(_Planet.mu * Math.Pow((1 - _Planet.Eccentricity) / q, 3));
+    internal double Alpha => Run.Instance.C / Run.Instance.AB;
+    internal double Beta => Run.Instance.r0 / Omega0;
+
     private void Start()
     {
-        CheckInputData();
-        transform.position = new Vector3((float)((_Planet.StartPosition + q) / _Run.Scale), 0, 0);
+        transform.position = new Vector3((float)((_Planet.StartPosition + q) / Run.Instance.Scale), 0, 0);
         ///
         /// вычислени€
         ///
-        double[] flightTime = new double[(int)Math.Round(_Run.TimeEnd / 0.02, 0) + 1];
+        double[] flightTime = new double[(int)Math.Round(Run.Instance.TimeEnd / 0.02, 0) + 1];
         for (int i = 1; i < flightTime.Length; i++)
             flightTime[i] = Math.Round(flightTime[i - 1] + 0.02,2);
-        SolveKeplerEquation solveKeplerEquation = new ClassicMethodSuccessiveApproximations(_Planet.n, _Planet.Eccentricity);
-        double[] E = solveKeplerEquation.Calculate(3, flightTime);
-        _Run.data.Nu = new double[E.Length];
-        _Run.data.H = new double[E.Length];
+
+        SolveKeplerEquation solveKeplerEquation;
+        if (Run.Instance.waysSolveKeplerEquation == WaysSolveKeplerEquation.ClassicApproximation)
+            solveKeplerEquation = new ClassicMethodSuccessiveApproximations(_Planet.n, _Planet.Eccentricity);
+        else if (Run.Instance.waysSolveKeplerEquation == WaysSolveKeplerEquation.DecompositionEccentricity)
+            solveKeplerEquation = new DecompositionDegreesEccentricity(_Planet.n, _Planet.Eccentricity);
+        else
+            solveKeplerEquation = new DenbyMethod(_Planet.n, _Planet.Eccentricity);
+        double[] E = solveKeplerEquation.Calculate(Run.Instance.ApproximationNumberKeplerEquation, flightTime);
+
+        Run.Instance.data.Nu = new double[E.Length];
+        Run.Instance.data.NuAbs = new double[E.Length];
+        Run.Instance.data.H = new double[E.Length];
         Angle = new EulerAngles[E.Length];
-        for (int i = 0; i < E.Length; i++)
+        double period = 0;
+        Run.Instance.data.Nu[0] = Elliptic.EtoNu(E[0], _Planet.Eccentricity);
+        for (int i = 1; i < E.Length; i++)
         {
-            _Run.data.Nu[i] = Elliptic.EtoNu(E[i], _Planet.Eccentricity);
-            Debug.LogWarning($"¬рем€ {flightTime[i]} -> E {E[i] * Mathf.Rad2Deg} -> nu {_Run.data.Nu[i] * Mathf.Rad2Deg}");
+            Run.Instance.data.Nu[i] = Elliptic.EtoNu(E[i], _Planet.Eccentricity);//Debug.LogWarning($"¬рем€ {flightTime[i]} -> E {E[i] * Mathf.Rad2Deg} -> nu {Run.Instance.data.NuTemp[i] * Mathf.Rad2Deg}");
+            if (Run.Instance.data.Nu[i] < 0)
+            {
+                if (Run.Instance.data.Nu[i - 1] > 0)
+                    period += Math.PI;
+                Run.Instance.data.NuAbs[i] = Math.PI + Run.Instance.data.Nu[i] + period;
+            }
+            else
+            {
+                if (Run.Instance.data.Nu[i - 1] < 0)
+                    period += Math.PI;
+                Run.Instance.data.NuAbs[i] = Run.Instance.data.Nu[i] + period;
+            }
         }
-        _Run.data.MotionsAngle = _Run.solveDifferentialEquation.RKCalculate((new EulerAngles(Phi0, Psi0, Theta0), new DimensionlessPulses(Pphi0, Ppsi0, Ptheta0)), _Run.data.Nu, _Planet.ClassOrbit.ODEMotions);
+        if (Run.Instance.odeMethod == ODEMethod.RungeKutta_Claccic || Run.Instance.odeMethod == ODEMethod.RungeKutta_3_8)
+            Run.Instance.data.MotionsAngle = SolveDifferentialEquation.RKCalculate((new EulerAngles(Phi0, Psi0, Theta0), new DimensionlessPulses(Pphi0, Ppsi0, Ptheta0)), Run.Instance.data.NuAbs, _Planet.ClassOrbit.ODEMotions, Run.Instance.odeMethod, Run.Instance.StepIntegration);
+        else
+            Run.Instance.data.MotionsAngle = SolveDifferentialEquation.RKCalculate((new EulerAngles(Phi0, Psi0, Theta0), new DimensionlessPulses(Pphi0, Ppsi0, Ptheta0)), Run.Instance.data.NuAbs, _Planet.ClassOrbit.ODEMotions, Run.Instance.odeMethod, Run.Instance.StepIntegration, Run.Instance.Epsilon);
+        ;
         for (int i = 0; i < E.Length; i++)
         {
-            _Planet.ClassOrbit.H(_Run.data.Nu[i], _Run.data.MotionsAngle[i]);
-            Angle[i] = (EulerAngles.ToDegrees(EulerAngles.ToUnityAngle(_Run.data.MotionsAngle[i].Item1)));
+            _Planet.ClassOrbit.H(Run.Instance.data.NuAbs[i], Run.Instance.data.MotionsAngle[i]);
+            Angle[i] = (EulerAngles.ToDegrees(EulerAngles.ToUnityAngle(Run.Instance.data.MotionsAngle[i].Item1)));
         }
         //for (int NumberApproximation = 0, j = stepFixedTime; NumberApproximation < data.Angle.Count; NumberApproximation++)
         //{
@@ -191,60 +166,30 @@ public class Satellite : MonoBehaviour
         //        j++;
         //    Time0 += deltaTime;
         //}
-        //_Run.save.SaveGame(_Run.data, _Run.odeMethod, 0.02, (int)(0.02 / _Run.DeltaTime));
+        //Run.save.SaveGame(Run.data, Run.odeMethod, 0.02, (int)(0.02 / Run.DeltaTime));
         //Math.Round(0.019,);
         
     }
     private void FixedUpdate()
     {
-        if (Time.time <= _Run.TimeEnd)
+        if (_index < Run.Instance.data.Nu.Length)
         {
             LinearMotion();
             AttitudeMotion();
-            _index++;
-            Debug.Log($"врем€ {Time.time}, индекс {_index++}, угол {_Run.data.Nu[_index]}");
+            if (_index + _speedTime <= Angle.Length)
+                _index += _speedTime;
+            else
+                _index++;
+            Debug.Log($"врем€ {Time.time}, индекс {_index}, угол {Run.Instance.data.Nu[_index]}");
         }
-        else
-            EditorApplication.isPaused = true;
     }
     internal double r(double nu) => p / (1 + _Planet.Eccentricity * Math.Cos(nu));
     private void LinearMotion()
     {
-        transform.position = _Planet.transform.position + new Vector3((float)(r(_Run.data.Nu[_index]) * Math.Cos(_Run.data.Nu[_index]) / _Run.Scale), (float)(r(_Run.data.Nu[_index]) * Math.Sin(_Run.data.Nu[_index]) / _Run.Scale), 0);
+        transform.position = _Planet.transform.position + new Vector3((float)(r(Run.Instance.data.Nu[_index]) * Math.Cos(Run.Instance.data.Nu[_index]) / Run.Instance.Scale), (float)(r(Run.Instance.data.Nu[_index]) * Math.Sin(Run.Instance.data.Nu[_index]) / Run.Instance.Scale), 0);
     }
     private void AttitudeMotion()
     {
         gameObject.transform.rotation = Quaternion.Euler(new Vector3((float)Angle[_index].phi, (float)Angle[_index].psi, (float)Angle[_index].theta));
-    }
-    private void CheckInputData()
-    {
-        if (0 >= Alpha || Alpha > 2)
-        {
-            Debug.LogError("alpha error");
-            EditorApplication.isPaused = true;
-        }
-        if (_Run.regularPrecession == RegularPrecessions.Hyperboloidal && Math.Abs(Alpha * Beta) > 1 && _Planet.Orbit == Planet.Orbits.Circular)
-        {
-            Debug.LogError($"|Alpha * Beta| > 1 <=> {Math.Abs(Alpha * Beta)} > 1");
-            EditorApplication.isPaused = true;
-        }
-        if (_Run.regularPrecession == RegularPrecessions.Conical && (Math.Abs(Alpha * Beta) > Math.Abs(3 * Alpha - 4) || Alpha == 4d / 3) && _Planet.Orbit == Planet.Orbits.Circular)
-        {
-            Debug.LogError($"|Alpha * Beta| > |3 * Alpha - 4| <=> {Math.Abs(Alpha * Beta)} > {Math.Abs(3 * Alpha - 4)} или Alpha = 4 / 3 <=> {Alpha} = {4d / 3}");
-            EditorApplication.isPaused = true;
-        }
-        //if (V0 >= Math.Sqrt(_Planet.g * _Planet.R * (1 + _Planet.Eccentricity)))
-        //{
-        //    Debug.LogError("V0 error");
-        //    EditorApplication.isPaused = true;
-        //}
-        //Debug.Log($"V0 = {V0} < {Math.Sqrt(_Planet.g * _Planet.R * (1 + _Planet.Eccentricity))}");
-
-        if (!(_Planet.R < q))
-        {
-            Debug.LogError("рассто€ние спутника от центра земли слишком мало");
-            EditorApplication.isPaused = true;
-        }
-        Debug.Log($"Omega0 = {Omega0}");
     }
 }

@@ -9,22 +9,49 @@ namespace DATA
 {
     public class Data
     {
-        internal readonly Planet.Orbits orbit;
+        internal readonly Orbits orbit;
         internal readonly RegularPrecessions regularPrecession;
         internal (EulerAngles, DimensionlessPulses)[] MotionsAngle;
         internal double[] Nu;
+        internal double[] NuAbs;
         internal double[] H;
         public Data(RegularPrecessions regularPrecession)
         {
             this.regularPrecession = regularPrecession;
         }
     }
+    public enum ODEMethod
+    {
+        RungeKutta_DormandPrince_78,
+        RungeKutta_Fehlberg_78,
+        RungeKutta_Fehlberg_56,
+        RungeKutta_DormandPrince_45,
+        RungeKutta_Fehlberg_45,
+        RungeKutta_Merson_45,
+        RungeKutta_England_45,
+        RungeKutta_CashKarp_45,
+        RungeKutta_BogackiShampine_45,
+        RungeKutta_3_8,
+        RungeKutta_Claccic,
+        Tsitouras_45
+    }
     public enum RegularPrecessions
     {
+        MyParametrs,
         Cylindrical,
         Hyperboloidal,
         Conical,
-        MyParametrs
+    }
+    public enum WaysSolveKeplerEquation
+    {
+        ClassicApproximation,
+        DecompositionEccentricity,
+        Denby
+    }
+    public enum Orbits
+    {
+        Circular,
+        Elliptical
     }
     [Serializable]
     public struct EulerAngles : IEquatable<EulerAngles>, IFormattable
@@ -51,10 +78,10 @@ namespace DATA
         public static EulerAngles operator +(EulerAngles a, EulerAngles b) => new(a.phi + b.phi, a.psi + b.psi, a.theta + b.theta);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static EulerAngles operator -(EulerAngles a, EulerAngles b) => new(a.phi + b.phi, a.psi - b.psi, a.theta - b.theta);
+        public static EulerAngles operator -(EulerAngles a, EulerAngles b) => new(a.phi - b.phi, a.psi - b.psi, a.theta - b.theta);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static EulerAngles operator -(EulerAngles a) => new(0.0 - a.phi, 0.0 - a.psi, 0.0 - a.theta);
+        public static EulerAngles operator -(EulerAngles a) => new(-a.phi, -a.psi, -a.theta);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static EulerAngles operator *(EulerAngles a, double d) => new(a.phi * d, a.psi * d, a.theta * d);
@@ -215,4 +242,5 @@ namespace DATA
             //return string.Format("(pphi: {0}, ppsi: {1}, ptheta: {2})", pphi.ToString(format, formatProvider), ppsi.ToString(format, formatProvider), ptheta.ToString(format, formatProvider));
         }
     }
+
 }
