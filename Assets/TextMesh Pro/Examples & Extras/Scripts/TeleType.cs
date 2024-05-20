@@ -21,7 +21,7 @@ namespace TMPro.Examples
 
         void Awake()
         {
-            // Get Reference to TextMeshPro Component
+            // Get Reference to Speed Component
             m_textMeshPro = GetComponent<TMP_Text>();
             m_textMeshPro.text = label01;
             m_textMeshPro.enableWordWrapping = true;
@@ -59,7 +59,7 @@ namespace TMPro.Examples
             {
                 visibleCount = counter % (totalVisibleCharacters + 1);
 
-                m_textMeshPro.maxVisibleCharacters = visibleCount; // How many characters should TextMeshPro display?
+                m_textMeshPro.maxVisibleCharacters = visibleCount; // How many characters should Speed display?
 
                 // Once the last character has been revealed, wait 1.0 second and start over.
                 if (visibleCount >= totalVisibleCharacters)

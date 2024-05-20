@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using static System.Math;
@@ -12,9 +13,11 @@ namespace DATA
         internal readonly Orbits orbit;
         internal readonly RegularPrecessions regularPrecession;
         internal (EulerAngles, DimensionlessPulses)[] MotionsAngle;
+        internal double[] E;
         internal double[] Nu;
         internal double[] NuAbs;
         internal double[] H;
+        internal double[] FlightTime;
         public Data(RegularPrecessions regularPrecession)
         {
             this.regularPrecession = regularPrecession;
@@ -22,18 +25,19 @@ namespace DATA
     }
     public enum ODEMethod
     {
-        RungeKutta_DormandPrince_78,
         RungeKutta_Fehlberg_78,
+        RungeKutta_DormandPrince_78,
         RungeKutta_Fehlberg_56,
-        RungeKutta_DormandPrince_45,
-        RungeKutta_Fehlberg_45,
-        RungeKutta_Merson_45,
-        RungeKutta_England_45,
-        RungeKutta_CashKarp_45,
+        RungeKutta_Verner_56,
         RungeKutta_BogackiShampine_45,
+        RungeKutta_DormandPrince_45,
+        RungeKutta_DormandPrince_45_1,
+        RungeKutta_Fehlberg_54,
+        RungeKutta_England_54,
+        RungeKutta_CashKarp_54,
+        RungeKutta_Merson_45,
         RungeKutta_3_8,
         RungeKutta_Claccic,
-        Tsitouras_45
     }
     public enum RegularPrecessions
     {
@@ -44,7 +48,7 @@ namespace DATA
     }
     public enum WaysSolveKeplerEquation
     {
-        ClassicApproximation,
+        Iteration_method,
         DecompositionEccentricity,
         Denby
     }
@@ -73,6 +77,16 @@ namespace DATA
             this.psi = psi;
             this.theta = theta;
         }
+        public static EulerAngles zero
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return zeroEulerAngles;
+            }
+        }
+
+        private static readonly EulerAngles zeroEulerAngles = new EulerAngles(0f, 0f, 0f);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static EulerAngles operator +(EulerAngles a, EulerAngles b) => new(a.phi + b.phi, a.psi + b.psi, a.theta + b.theta);
@@ -162,7 +176,7 @@ namespace DATA
             alpha = Asin(Sin(value.theta) * Cos(value.phi));
             if (Sqrt(1 - Pow(Sin(value.theta) * Cos(value.phi), 2)) == 0)
             {
-                Debug.LogError($"Не удалось перевести в Углы Эйлера используемых в Unity\nЗнаменатель Sqrt(1 - ((Sin(value.theta) * Cos(value.phi)) ^ 2) = 0 при {value}");
+                //Debug.LogError($"Не удалось перевести Углы Эйлера в Unity\nЗнаменатель Sqrt(1 - ((Sin(value.theta) * Cos(value.phi)) ^ 2) = 0 \n{Sqrt(1 - Pow(Sin(value.theta) * Cos(value.phi), 2))} \nпри {value}");
                 betaSin = Sin(value.phi) * Sin(value.theta) / double.Epsilon;
                 betaCos = Cos(value.theta) / double.Epsilon;
                 gammaSin = (Sin(value.phi) * Cos(value.psi) + Cos(value.phi) * Sin(value.psi) * Cos(value.theta)) / double.Epsilon;
@@ -178,6 +192,12 @@ namespace DATA
             beta = Atan2(betaSin, betaCos);
             gamma = Atan2(gammaSin, gammaCos);
             return new EulerAngles(alpha, beta, gamma);
+        }
+        public static EulerAngles RotationAroundY(EulerAngles value, double angle)
+        {
+            value.phi = value.phi * Cos(angle) - value.theta * Sin(angle);
+            value.theta = value.phi * Sin(angle) + value.theta * Cos(angle);
+            return value;
         }
         public static EulerAngles ToDegrees(EulerAngles value) => new EulerAngles(value.phi, value.psi, value.theta) * Mathf.Rad2Deg;
     }

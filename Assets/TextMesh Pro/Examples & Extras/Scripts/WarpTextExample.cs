@@ -52,7 +52,7 @@ namespace TMPro.Examples
             Vector3[] vertices;
             Matrix4x4 matrix;
 
-            m_TextComponent.havePropertiesChanged = true; // Need to force the TextMeshPro Object to be updated.
+            m_TextComponent.havePropertiesChanged = true; // Need to force the Speed Object to be updated.
             CurveScale *= 10;
             float old_CurveScale = CurveScale;
             AnimationCurve old_curve = CopyAnimationCurve(VertexCurve);

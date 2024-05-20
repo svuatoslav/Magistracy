@@ -68,7 +68,7 @@ namespace TMPro.Examples
                     visibleCount = 0;
                 }
 
-                textComponent.maxVisibleCharacters = visibleCount; // How many characters should TextMeshPro display?
+                textComponent.maxVisibleCharacters = visibleCount; // How many characters should Speed display?
 
                 visibleCount += 1;
 
@@ -103,7 +103,7 @@ namespace TMPro.Examples
                 else if (currentWord == totalWordCount) // Display last word and all remaining characters.
                     visibleCount = totalVisibleCharacters;
 
-                textComponent.maxVisibleCharacters = visibleCount; // How many characters should TextMeshPro display?
+                textComponent.maxVisibleCharacters = visibleCount; // How many characters should Speed display?
 
                 // Once the last character has been revealed, wait 1.0 second and start over.
                 if (visibleCount >= totalVisibleCharacters)
