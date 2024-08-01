@@ -1,7 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Reflection;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,10 +17,7 @@ public class UISinulation : MonoBehaviour
         _satellite._speedTime = (int)speed;
         Speed.text =  speed.ToString();
     }
-    public void ChangeTimeIndex(float speed)
-    {
-        _satellite.TimeIndex = (int)speed;
-    }
+    public void ChangeTimeIndex(float speed) => _satellite.TimeIndex = (int)speed;
     public void ChangeTime(int indexTime)
     {
         Time.value = indexTime;
@@ -34,6 +28,6 @@ public class UISinulation : MonoBehaviour
     }
     private void Start()
     {
-        Time.maxValue = (int)Math.Round(Run.Instance.TimeEnd / 0.02, 0) + 1;
+        Time.maxValue = (int)Math.Round(Run.Instance.TimeEnd / 0.02, 0);
     }
 }

@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.CompilerServices;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 using static System.Math;
 namespace DATA
@@ -141,33 +138,7 @@ namespace DATA
             formatProvider ??= CultureInfo.InvariantCulture.NumberFormat;
 
             return string.Format("(phi: {0}, psi: {1}, theta: {2})", phi == 0 ? 0 : phi.ToString(format, formatProvider), psi == 0 ? 0 : psi.ToString(format, formatProvider), theta == 0 ? 0 : theta.ToString(format, formatProvider));
-            //return string.Format("(phi: {0}, psi: {1}, theta: {2})", phi.ToString(format, formatProvider), psi.ToString(format, formatProvider), theta.ToString(format, formatProvider));
         }
-        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        //public static Vector3 Normalize(Vector3 value)
-        //{
-        //    float num = Magnitude(value);
-        //    if (num > 1E-05f)
-        //    {
-        //        return value / num;
-        //    }
-
-        //    return zero;
-        //}
-
-        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        //public void Normalize()
-        //{
-        //    float num = Magnitude(this);
-        //    if (num > 1E-05f)
-        //    {
-        //        this /= num;
-        //    }
-        //    else
-        //    {
-        //        this = zero;
-        //    }
-        //}
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static EulerAngles ToUnityAngle(EulerAngles value)
         {
@@ -232,15 +203,6 @@ namespace DATA
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DimensionlessPulses operator /(DimensionlessPulses a, double d) => new(a.pphi / d, a.ppsi / d, a.ptheta / d);
         public override bool Equals(object other) => other is not EulerAngles ? false : Equals((EulerAngles)other);
-        //public override bool Equals(object other)
-        //{
-        //    if (other is not DimensionlessPulses)
-        //    {
-        //        return false;
-        //    }
-
-        //    return Equals((EulerAngles)other);
-        //}
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(DimensionlessPulses other) => pphi.Equals(other.pphi) && ppsi.Equals(other.ppsi) && ptheta.Equals(other.ptheta);
@@ -259,8 +221,6 @@ namespace DATA
             formatProvider ??= CultureInfo.InvariantCulture.NumberFormat;
 
             return string.Format("(pphi: {0}, ppsi: {1}, ptheta: {2})", pphi == 0 ? 0 : pphi.ToString(format, formatProvider), ppsi == 0 ? 0 : ppsi.ToString(format, formatProvider), ptheta == 0 ? 0 : ptheta.ToString(format, formatProvider));
-            //return string.Format("(pphi: {0}, ppsi: {1}, ptheta: {2})", pphi.ToString(format, formatProvider), ppsi.ToString(format, formatProvider), ptheta.ToString(format, formatProvider));
         }
     }
-
 }

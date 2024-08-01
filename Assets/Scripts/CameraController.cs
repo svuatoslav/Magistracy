@@ -1,9 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class CameraController : MonoBehaviour
 {
+    [SerializeField] private Transform sputnik = null;
     [SerializeField] private float initialSpeed = 10f;
     [SerializeField] private float increaseSpeed = 1.25f;
 
@@ -20,6 +20,8 @@ public class CameraController : MonoBehaviour
     [SerializeField] private KeyCode backwardButton = KeyCode.S;
     [SerializeField] private KeyCode rightButton = KeyCode.D;
     [SerializeField] private KeyCode leftButton = KeyCode.A;
+    [SerializeField] private KeyCode TopButton = KeyCode.E;
+    [SerializeField] private KeyCode BotButton = KeyCode.Q;
 
     [SerializeField] private float cursorSensitivity = 0.025f;
     [SerializeField] private bool cursorToggleAllowed = false;
@@ -31,7 +33,8 @@ public class CameraController : MonoBehaviour
 
     [Range(-360, 360)][SerializeField] private float minAngle = 89f;
     [Range(-360, 360)][SerializeField] private float maxAngle = 271f;
-
+    private bool sled = false;
+    private Vector3 initalOffset;
     private void OnEnable()
     {
         if (cursorToggleAllowed && isEnabled)
@@ -75,7 +78,27 @@ public class CameraController : MonoBehaviour
 
                 transform.position += deltaPosition * currentSpeed * Time.deltaTime;
             }
-            else currentSpeed = 0f;
+            else currentSpeed = 0f; 
+            if (Input.GetKey(TopButton))
+            {
+                transform.localPosition += transform.up * 10 * Time.deltaTime;
+            }
+            else if (Input.GetKey(BotButton))
+            {
+                transform.localPosition += -transform.up * 10 * Time.deltaTime;
+            }
+            if (Input.GetMouseButton(2))
+                if (sled){
+                    sled = false;}
+                else
+                {
+                    sled = true;
+                    initalOffset = transform.position - sputnik.position;
+                }
+        }
+        if (sled)
+        {
+            transform.position = sputnik.position + initalOffset;
         }
 
         if (allowRotation)

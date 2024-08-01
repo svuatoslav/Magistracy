@@ -2,9 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DATA;
-using UnityEditor;
-using UnityEngine;
-using static Run;
 
 public static class SolveDifferentialEquation
 {
@@ -234,16 +231,16 @@ public static class SolveDifferentialEquation
             if (delta_nu > nu[i] - nu_now)
                 delta_nu = nu[i] - nu_now;
             temp = rk_adapt(result[i - 1], ODEMotions, odeMethod, ref nu_now, ref delta_nu, Butcher, epsilon);
-            if (nu_now == nu[i])
+            if (nu_now >= nu[i])
             {
                 result[i] = temp;
                 i++;
             }
-            else if (nu_now > nu[i])
-            {
-                Debug.LogError($"ошибка в адаптивном методе {nu_now - nu[i]} при шаге {delta_nu}");
-                EditorApplication.isPaused = true;
-            }
+            //else if (nu_now > nu[i])
+            //{
+            //    Debug.LogError($"ошибка в адаптивном методе {nu_now - nu[i]} при шаге {delta_nu}");
+            //    EditorApplication.isPaused = true;
+            //}
         }
         return result;
     }
@@ -395,6 +392,7 @@ public static class SolveDifferentialEquation
                     }
                     else
                     {
+                        p = 6;
                         for (int i = 0; i < ODEMotions.Count; i++)
                             k[7, i] = ODEMotions[i](t + Butcher.C[7] * delta_t,
                             (new EulerAngles(y.angle.phi + Summ(Butcher.A, k, 6, 7, 0) * delta_t,
@@ -403,7 +401,6 @@ public static class SolveDifferentialEquation
                             new DimensionlessPulses(y.impuls.pphi + Summ(Butcher.A, k, 6, 7, 3) * delta_t,
                             y.impuls.ppsi + Summ(Butcher.A, k, 6, 7, 4) * delta_t,
                             y.impuls.ptheta + Summ(Butcher.A, k, 6, 7, 5) * delta_t)));
-                        p = 6;
                         if (odeMethod == ODEMethod.RungeKutta_BogackiShampine_45 || odeMethod == ODEMethod.RungeKutta_Verner_56 || odeMethod == ODEMethod.RungeKutta_Fehlberg_56)
                         {
                             next = (angle: new EulerAngles(y.angle.phi + Summ(Butcher.B, k, 0, 8, 0) * delta_t,

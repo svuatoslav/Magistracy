@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: f0742823962d31b4ebfa4be9309ddd4e, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: f531e09e2ad2fb440b4eed7605863143, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.00021291373, g: 0.00043713034, b: 0.00021291373, a: 1}
+  m_IndirectSpecularColor: {r: 0.009786322, g: 0.05188985, b: 0.15229288, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1288,6 +1288,7 @@ GameObject:
   - component: {fileID: 963194228}
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
+  - component: {fileID: 963194229}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1369,6 +1370,39 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 90, y: -90, z: 0}
+--- !u!114 &963194229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b138e331a0f498842a094e550b52a132, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sputnik: {fileID: 1929055436}
+  initialSpeed: 10
+  increaseSpeed: 1.25
+  isEnabled: 1
+  allowMovement: 1
+  allowRotation: 0
+  allowRotationOnRightClick: 1
+  cursorVisibleByDefault: 1
+  allowMiddleClickPanning: 1
+  middleClickPanningSpeed: 12
+  forwardButton: 119
+  backwardButton: 115
+  rightButton: 100
+  leftButton: 97
+  TopButton: 101
+  BotButton: 113
+  cursorSensitivity: 0.025
+  cursorToggleAllowed: 1
+  cursorToggleButton: 27
+  minAngle: 89
+  maxAngle: 271
 --- !u!1 &999984378
 GameObject:
   m_ObjectHideFlags: 0

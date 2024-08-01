@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using DATA;
@@ -7,21 +5,8 @@ using System;
 
 public class Satellite : MonoBehaviour
 {
-    [Header("Просо так")]
-    //[SerializeField] private Run Run;
     [SerializeField] private Planet _Planet = null;
     [SerializeField] private UISinulation _UISinulation = null;
-    //[SerializeField] private double _AB;
-    //[SerializeField] private double _C;
-    //[SerializeField] private double phi0;
-    //[SerializeField] private double psi0;
-    //[SerializeField] private double theta0;
-    //[SerializeField] private double pphi0;
-    //[SerializeField] private double ppsi0;
-    //[SerializeField] private double ptheta0;
-    ////[SerializeField] private double _V0;
-    //[SerializeField] private double _r_min;
-    //[SerializeField] private double _r0;
     internal EulerAngles[] Angle;
     internal int TimeIndex = 0;
     internal int _speedTime = 1;
@@ -131,14 +116,9 @@ public class Satellite : MonoBehaviour
     private void Start()
     {
         transform.position = StartPosition;
-        ///
-        /// вычисления
-        ///
         Run.Instance.data.FlightTime = new double[(int)Math.Round(Run.Instance.TimeEnd / 0.02, 0) + 1];
         for (int i = 1; i < Run.Instance.data.FlightTime.Length; i++)
             Run.Instance.data.FlightTime[i] = Math.Round(Run.Instance.data.FlightTime[i - 1] + 0.02, 2);
-
-        //Run.Instance.data.E = new double[FlightTime.Length];
         Run.Instance.data.Nu = new double[Run.Instance.data.FlightTime.Length];
         Run.Instance.data.NuAbs = new double[Run.Instance.data.FlightTime.Length];
         Run.Instance.data.H = new double[Run.Instance.data.FlightTime.Length];
@@ -161,7 +141,8 @@ public class Satellite : MonoBehaviour
         Run.Instance.data.Nu[0] = Elliptic.EtoNu(Run.Instance.data.E[0], _Planet.Eccentricity);
         for (int i = 1; i < Run.Instance.data.FlightTime.Length; i++)
         {
-            Run.Instance.data.Nu[i] = Elliptic.EtoNu(Run.Instance.data.E[i], _Planet.Eccentricity);//Debug.LogWarning($"Время {FlightTime[i]} -> E {E[i] * Mathf.Rad2Deg} -> nu {Run.Instance.data.NuTemp[i] * Mathf.Rad2Deg}");
+            Run.Instance.data.Nu[i] = Elliptic.EtoNu(Run.Instance.data.E[i], _Planet.Eccentricity);
+            //Debug.LogWarning($"Время {FlightTime[i]} -> E {E[i] * Mathf.Rad2Deg} -> nu {Run.Instance.data.NuTemp[i] * Mathf.Rad2Deg}");
             if (Run.Instance.data.Nu[i] < 0)
             {
                 if (Run.Instance.data.Nu[i - 1] > 0)
@@ -195,12 +176,9 @@ public class Satellite : MonoBehaviour
         {
             Run.Instance.data.H[i] = _Planet.ClassOrbit.H(Run.Instance.data.NuAbs[i], Run.Instance.data.MotionsAngle[i]);
             Angle[i] = (EulerAngles.ToDegrees(EulerAngles.ToUnityAngle(Run.Instance.data.MotionsAngle[i].Item1)));
-            //Angle[i] = (EulerAngles.ToDegrees(EulerAngles.ToUnityAngle(Run.Instance.data.MotionsAngle[i].Item1)));
         }
         Run.Instance.save.SaveGame(Run.Instance.data, Run.Instance.odeMethod, Run.Instance.waysSolveKeplerEquation);
         gameObject.transform.rotation = Quaternion.Euler(new Vector3((float)Angle[0].phi, (float)Angle[0].psi, (float)Angle[0].theta));
-        //gameObject.transform.rotation = Quaternion.Euler(new Vector3((float)Angle[0].psi, (float)Angle[0].phi, (float)Angle[0].theta));//цилиндр
-        //gameObject.transform.rotation = Quaternion.Euler(new Vector3((float)Angle[0].psi, (float)Angle[0].phi, (float)Angle[0].theta));//цилиндр
     }
     private void FixedUpdate()
     {
@@ -218,7 +196,5 @@ public class Satellite : MonoBehaviour
     }
     internal double r(double nu) => p / (1 + _Planet.Eccentricity * Math.Cos(nu));
     private Vector3 LinearMotion() => _Planet.transform.position + new Vector3(-(float)(r(Run.Instance.data.Nu[TimeIndex]) * Math.Sin(Run.Instance.data.Nu[TimeIndex]) / Run.Instance.Scale), 0, (float)(r(Run.Instance.data.Nu[TimeIndex]) * Math.Cos(Run.Instance.data.Nu[TimeIndex]) / Run.Instance.Scale));
-    //цилиндр
-    //private Quaternion AttitudeMotion() => Quaternion.Euler(new Vector3((float)Angle[TimeIndex].psi, (float)(Angle[TimeIndex].phi - Run.Instance.data.Nu[TimeIndex] * Mathf.Rad2Deg), (float)Angle[TimeIndex].theta));//-(float)Run.Instance.data.Nu[TimeIndex] * Mathf.Rad2Deg
-    private Quaternion AttitudeMotion() => Quaternion.Euler(new Vector3((float)Angle[TimeIndex].phi, (float)(Angle[TimeIndex].psi - Run.Instance.data.Nu[TimeIndex] * Mathf.Rad2Deg), (float)Angle[TimeIndex].theta));//-(float)Run.Instance.data.Nu[TimeIndex] * Mathf.Rad2Deg
+    private Quaternion AttitudeMotion() => Quaternion.Euler(new Vector3((float)Angle[TimeIndex].phi, (float)(Angle[TimeIndex].psi - Run.Instance.data.Nu[TimeIndex] * Mathf.Rad2Deg), (float)Angle[TimeIndex].theta));
 }

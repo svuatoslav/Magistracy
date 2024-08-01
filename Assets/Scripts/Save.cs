@@ -1,11 +1,6 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using DATA;
-using System.Numerics;
-using Unity.VisualScripting;
 
 public class Save
 {
@@ -86,29 +81,28 @@ public class Save
                 swE.Write($"{(float)data.NuAbs[i]}\t".Replace(",", "."));
         }
         using var swODE = new StreamWriter(filePathODE);
-        for (int i = 0; i < data.NuAbs.Length; i++)
+        for (int i = 0; i < data.NuAbs.Length; i+=50)
             swODE.Write($"{(float)data.NuAbs[i]}\t".Replace(",", "."));//time = Math.Round(time + deltaTime, 3);
         swODE.WriteLine();
-        for (int i = 0; i < data.MotionsAngle.Length; i++)
+        for (int i = 0; i < data.MotionsAngle.Length; i += 50)
             swODE.Write($"{(float)data.MotionsAngle[i].Item1.phi}\t".Replace(",", "."));
         swODE.WriteLine();
-        for (int i = 0; i < data.MotionsAngle.Length; i++)
+        for (int i = 0; i < data.MotionsAngle.Length; i += 50)
             swODE.Write($"{(float)data.MotionsAngle[i].Item1.psi}\t".Replace(",", "."));
         swODE.WriteLine();
-        for (int i = 0; i < data.MotionsAngle.Length; i++)
+        for (int i = 0; i < data.MotionsAngle.Length; i += 50)
             swODE.Write($"{(float)data.MotionsAngle[i].Item1.theta}\t".Replace(",", "."));
         swODE.WriteLine();
-        for (int i = 0; i < data.MotionsAngle.Length; i++)
+        for (int i = 0; i < data.MotionsAngle.Length; i += 50)
             swODE.Write($"{(float)data.MotionsAngle[i].Item2.pphi}\t".Replace(",", "."));
         swODE.WriteLine();
-        for (int i = 0; i < data.MotionsAngle.Length; i++)
+        for (int i = 0; i < data.MotionsAngle.Length; i += 50)
             swODE.Write($"{(float)data.MotionsAngle[i].Item2.ppsi}\t".Replace(",", "."));
         swODE.WriteLine();
-        for (int i = 0; i < data.MotionsAngle.Length; i++)
+        for (int i = 0; i < data.MotionsAngle.Length; i += 50)
             swODE.Write($"{(float)data.MotionsAngle[i].Item2.ptheta}\t".Replace(",", "."));
         swODE.WriteLine();
-        for (int i = 0; i < data.H.Length; i++)
+        for (int i = 0; i < data.H.Length; i += 50)
             swODE.Write($"{(float)data.H[i]}\t".Replace(",", "."));
     }
-
 }

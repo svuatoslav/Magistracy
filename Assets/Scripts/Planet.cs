@@ -1,23 +1,10 @@
-using System.Collections;
 using UnityEngine;
 using DATA;
-using UnityEditor;
 using System;
-using UnityEditor.SceneManagement;
-using System.Data;
 
 public class Planet : MonoBehaviour
 {
-    [Header("Просо так")]
-    //[SerializeField] private Run Run;
-    //[SerializeField] private double e;
     [SerializeField] private Satellite Satellite = null;
-    //[SerializeField] private Orbits orbit;
-    //[SerializeField] private double _g;
-    //internal double mu = 3.986004418e14;
-    //internal const double G = 6670e-11;//6670+-5*10^(-11)
-    //internal double M = 597422722e22;//59733e20;//mu/G=0,597422722e31=597422722e22
-    //internal double R = 6371392.896;//метров = 3959 мили//max 6377830.272=3963 мили //6371300;//6371320 6378100//transform.localScale.x / 2;
     internal Orbit ClassOrbit { get; set; }
     private LineRenderer lineRenderer;
     internal double Eccentricity { get { return Run.Instance.e; } }

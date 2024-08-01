@@ -1,13 +1,7 @@
-using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
-using UnityEditor;
 using System;
 using DATA;
 using UnityEngine.SceneManagement;
-using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
-using System.Numerics;
-using TMPro;
 
 public class Run : MonoBehaviour
 {
@@ -20,37 +14,34 @@ public class Run : MonoBehaviour
     public static Run Instance { get; set; }
     public const double G = 6670e-14;
     //satelite
-    public double AB { get; private set; } = 1;// дл€ прец по 1
-    public double C { get; private set; } = 0.5;// дл€ прец по 1
+    public double AB { get; private set; } = 1;// дл€ прец по 1 3
+    public double C { get; private set; } = 2;// дл€ прец по 1 0.5 3.5
     public double Phi0 { get; private set; } = 0;
-    public double Psi0 { get; private set; } = Math.PI / 6; // 0.52359877559829887307710723054658;
-    public double Theta0 { get; private set; } = Math.PI / 6; // 1.0471975511965977461542144610932;
-    public double Ppsi0 { get; private set; } = 0.2;
-    public double Ptheta0 { get; private set; } = 0.2;
+    public double Psi0 { get; private set; } = 2.691293943; // 0.52359877559829887307710723054658; -0.3184707604  Math.PI / 6 ||  2.691293943
+    public double Theta0 { get; private set; } = 1.365098143; // 1.0471975511965977461542144610932; -0.8575990742 Math.PI / 3 || 1.365098143
+    public double Ppsi0 { get; private set; } = -0.1286207039; //-0.6841671094e-1 || -0.1286207039
+    public double Ptheta0 { get; private set; } = -0.1953389866; //0.3678909278e-1 0.5 || -0.1953389866
     public int SelectingParameter { get; private set; } = 0;
-    public double ValueParameter { get; private set; } = 1; // дл€ прец по 0,5 beta
-    //  оническа€
-    //0.86602540378443864676372317075294
-    // Ѕолоид
-    //-0.5
-    public double r0 { get; private set; } = 0.1;
-    public double Beta { get; private set; } = 0.5;
-    public double PhiDot0 { get; private set; } = 0.1;
+    public double ValueParameter { get; private set; } = 1; // дл€ прец по 0,5 beta 0.489999999999999990 * 3 / 3.5 0.510000000000000008 * 3 / 3.5
+    // период 6.171006218
+    public double Beta { get; private set; } = 0;
+    public double r0 { get; private set; } = 0;
+    public double PhiDot0 { get; private set; } = 0;
     public double Height { get; private set; } = 1000000;
     //planet
-    public double e { get; private set; } = 0.01;
+    public double e { get; private set; } = 0.1; //0.01
     public double R { get; private set; } = 6378000;
     public double M { get; private set; } = 59726;//5.976*10^(27-3)
     public int MPower { get; private set; } = 20;
     public double mu => G * M;
     // other
-    public int TimeEnd { get; private set; } = 7200; // 86400;
-    public double StepIntegration { get; private set; } = 0.00001;
-    public double Epsilon { get; private set; } = 0.000001;//0.0001
+    public int TimeEnd { get; private set; } = 36960; //36960 7200 9000 13000 21600 22000 86400 36000
+    public double StepIntegration { get; private set; } = 10e-10; // 0.000001 0.000000001 10e-10
+    public double Epsilon { get; private set; } = 10e-20;//0.0001 000001 10e-15 25
     public int ApproximationNumberKeplerEquation { get; private set; } = 3;
     public int Scale { get; private set; } = 1000000;
     public ODEMethod odeMethod { get; private set; } = ODEMethod.RungeKutta_Fehlberg_78;
-    public RegularPrecessions regularPrecession { get; private set; } = RegularPrecessions.MyParametrs;
+    public RegularPrecessions regularPrecession { get; private set; } = RegularPrecessions.Conical;
     public WaysSolveKeplerEquation waysSolveKeplerEquation { get; private set; } = WaysSolveKeplerEquation.Denby;
 
 

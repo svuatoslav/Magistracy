@@ -1,10 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static System.Math;
 using DATA;
-using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 
 abstract public class Orbit
