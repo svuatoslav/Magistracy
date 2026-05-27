@@ -187,12 +187,17 @@ public class Satellite : MonoBehaviour
             //Debug.Log($"индекс {TimeIndex}, угол {Run.Instance.data.Nu[TimeIndex]}");
             transform.position = LinearMotion();
             gameObject.transform.rotation = AttitudeMotion();
-            _UISinulation.ChangeTime(TimeIndex);
-            if (TimeIndex + _speedTime < Angle.Length)
-                TimeIndex += _speedTime;
-            else if (TimeIndex < Angle.Length - 1)
-                TimeIndex++;
+
+            _UISinulation.UITime(TimeIndex);
+            ChangeTime();
         }
+    }
+    private void ChangeTime()
+    {
+        if (TimeIndex + _speedTime < Angle.Length)
+            TimeIndex += _speedTime;
+        else if (TimeIndex < Angle.Length - 1)
+            TimeIndex++;
     }
     internal double r(double nu) => p / (1 + _Planet.Eccentricity * Math.Cos(nu));
     private Vector3 LinearMotion() => _Planet.transform.position + new Vector3(-(float)(r(Run.Instance.data.Nu[TimeIndex]) * Math.Sin(Run.Instance.data.Nu[TimeIndex]) / Run.Instance.Scale), 0, (float)(r(Run.Instance.data.Nu[TimeIndex]) * Math.Cos(Run.Instance.data.Nu[TimeIndex]) / Run.Instance.Scale));

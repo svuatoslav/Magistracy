@@ -17,8 +17,8 @@ public class UISinulation : MonoBehaviour
         _satellite._speedTime = (int)speed;
         Speed.text =  speed.ToString();
     }
-    public void ChangeTimeIndex(float speed) => _satellite.TimeIndex = (int)speed;
-    public void ChangeTime(int indexTime)
+    //public void ChangeTimeIndex(float speed) => _satellite.TimeIndex = (int)speed;
+    public void UITime(int indexTime)
     {
         Time.value = indexTime;
         Day.text = (indexTime / 4320000).ToString() + " сут.";

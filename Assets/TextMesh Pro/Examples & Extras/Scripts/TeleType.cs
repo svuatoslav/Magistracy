@@ -4,7 +4,7 @@ using System.Collections;
 
 namespace TMPro.Examples
 {
-    
+
     public class TeleType : MonoBehaviour
     {
 
@@ -21,10 +21,10 @@ namespace TMPro.Examples
 
         void Awake()
         {
-            // Get Reference to Speed Component
+            // Get Reference to TextMeshPro Component
             m_textMeshPro = GetComponent<TMP_Text>();
             m_textMeshPro.text = label01;
-            m_textMeshPro.enableWordWrapping = true;
+            m_textMeshPro.textWrappingMode = TextWrappingModes.Normal;
             m_textMeshPro.alignment = TextAlignmentOptions.Top;
 
 
@@ -59,7 +59,7 @@ namespace TMPro.Examples
             {
                 visibleCount = counter % (totalVisibleCharacters + 1);
 
-                m_textMeshPro.maxVisibleCharacters = visibleCount; // How many characters should Speed display?
+                m_textMeshPro.maxVisibleCharacters = visibleCount; // How many characters should TextMeshPro display?
 
                 // Once the last character has been revealed, wait 1.0 second and start over.
                 if (visibleCount >= totalVisibleCharacters)
