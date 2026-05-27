@@ -9,6 +9,7 @@ public static class SolveDifferentialEquation
         in double t, in double delta_t, in (double[,] A, double[,] B, double[] C) Butcher);
     delegate (EulerAngles, DimensionlessPulses) RK_adapt(in (EulerAngles, DimensionlessPulses) y, List<Func<double, (EulerAngles, DimensionlessPulses), double>> ODEMotions,
         in ODEMethod odeMethod, ref double t, ref double delta_t, in (double[,] A, double[,] B, double[] C, double[] D) Butcher, in double epsilon);
+    
     public static (EulerAngles, DimensionlessPulses)[] RKCalculate(in (EulerAngles, DimensionlessPulses) initialValues, double[] nu, List<Func<double, (EulerAngles, DimensionlessPulses), double>> ODEMotions, in ODEMethod oDEMethod, in double delta_nu)
     {
         (double[,] A, double[,] B, double[] C) Butcher;
@@ -48,6 +49,7 @@ public static class SolveDifferentialEquation
         }
         return result;
     }
+    
     public static (EulerAngles, DimensionlessPulses)[] RKCalculate(in (EulerAngles, DimensionlessPulses) initialValues, double[] nu, List<Func<double, (EulerAngles, DimensionlessPulses), double>> ODEMotions, in ODEMethod odeMethod, double delta_nu, in double epsilon)
     {
         (double[,] A, double[,] B, double[] C, double[] D) Butcher;
@@ -244,6 +246,7 @@ public static class SolveDifferentialEquation
         }
         return result;
     }
+    
     internal static (EulerAngles, DimensionlessPulses) RK4(in (EulerAngles angle, DimensionlessPulses impuls) y, List<Func<double, (EulerAngles, DimensionlessPulses), double>> ODEMotions, in double t, in double delta_t, in (double[,] A, double[,] B, double[] C) Butcher)
     {
         var k = new double[Butcher.C.Length, ODEMotions.Count];
@@ -280,6 +283,7 @@ public static class SolveDifferentialEquation
             y.impuls.ppsi + delta_t * (Butcher.B[0, 0] * k[0, 4] + Butcher.B[0, 1] * k[1, 4] + Butcher.B[0, 2] * k[2, 4] + Butcher.B[0, 3] * k[3, 4]),
             y.impuls.ptheta + delta_t * (Butcher.B[0, 0] * k[0, 5] + Butcher.B[0, 1] * k[1, 5] + Butcher.B[0, 2] * k[2, 5] + Butcher.B[0, 3] * k[3, 5])));
     }
+    
     internal static (EulerAngles, DimensionlessPulses) RK_adapt_step(in (EulerAngles angle, DimensionlessPulses impuls) y, List<Func<double, (EulerAngles, DimensionlessPulses), double>> ODEMotions, in ODEMethod odeMethod, ref double t, ref double delta_t, in (double[,] A, double[,] B, double[] C, double[] D) Butcher, in double epsilon)
     {
         var k = new double[Butcher.C.Length, ODEMotions.Count];
@@ -488,14 +492,14 @@ public static class SolveDifferentialEquation
                     delta_t *= 0.9 * Math.Pow(epsilon / TE.Max(), 1d / p);
                 else
                     delta_t *= 2;
-                //if (double.IsInfinity(delta_t) || delta_t == 0)
-                //    Debug.LogError($"шаг стал бесконечным: {double.IsInfinity(delta_t)}");
+
                 return next;
             }
             else
                 delta_t *= 0.9 * Math.Pow(epsilon / TE.Max(), 1d / p);
         }
     }
+    
     private static double Summ(in double[,] Butcher, in double[,] k, int line, int column, int lineEquations)
     {
         double sum = 0;
@@ -503,6 +507,7 @@ public static class SolveDifferentialEquation
             sum += Butcher[line, i] * k[i, lineEquations];
         return sum;
     }
+
     private static double Summ(in double[] Butcher, in double[,] k, int column, int lineEquations)
     {
         double sum = 0;
