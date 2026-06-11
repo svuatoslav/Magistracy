@@ -9,9 +9,9 @@
         public EmbeddedButcherTableau(
             double[,] a,
             double[] b,
+            double[] bLower,
             double[] c,
             int order,
-            double[] bLower,
             int lowerOrder)
             : base(a, b, c, order)
         {

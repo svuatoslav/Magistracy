@@ -8,52 +8,40 @@ namespace DATA
     public class Data
     {
         internal readonly Orbits orbit;
-        internal readonly RegularPrecessions regularPrecession;
+        internal readonly RegularPrecession regularPrecession;
         internal (EulerAngles, DimensionlessPulses)[] MotionsAngle;
         internal double[] E;
         internal double[] Nu;
         internal double[] NuAbs;
         internal double[] H;
         internal double[] FlightTime;
-        public Data(RegularPrecessions regularPrecession)
+        public Data(RegularPrecession regularPrecession)
         {
             this.regularPrecession = regularPrecession;
         }
     }
-    public enum ODEMethod
-    {
-        RungeKutta_Fehlberg_78,
-        RungeKutta_DormandPrince_78,
-        RungeKutta_Fehlberg_56,
-        RungeKutta_Verner_56,
-        RungeKutta_BogackiShampine_45,
-        RungeKutta_DormandPrince_45,
-        RungeKutta_DormandPrince_45_1,
-        RungeKutta_Fehlberg_54,
-        RungeKutta_England_54,
-        RungeKutta_CashKarp_54,
-        RungeKutta_Merson_45,
-        RungeKutta_3_8,
-        RungeKutta_Claccic,
-    }
-    public enum RegularPrecessions
+
+    public enum RegularPrecession
     {
         MyParametrs,
         Cylindrical,
         Hyperboloidal,
         Conical,
     }
+
     public enum WaysSolveKeplerEquation
     {
         Iteration_method,
         DecompositionEccentricity,
         Denby
     }
+
     public enum Orbits
     {
         Circular,
         Elliptical
     }
+
     [Serializable]
     public struct EulerAngles : IEquatable<EulerAngles>, IFormattable
     {
@@ -74,6 +62,7 @@ namespace DATA
             this.psi = psi;
             this.theta = theta;
         }
+
         public static EulerAngles zero
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -137,8 +126,9 @@ namespace DATA
 
             formatProvider ??= CultureInfo.InvariantCulture.NumberFormat;
 
-            return string.Format("(phi: {0}, psi: {1}, theta: {2})", phi == 0 ? 0 : phi.ToString(format, formatProvider), psi == 0 ? 0 : psi.ToString(format, formatProvider), theta == 0 ? 0 : theta.ToString(format, formatProvider));
+            return string.Format("(Phi: {0}, psi: {1}, theta: {2})", phi == 0 ? 0 : phi.ToString(format, formatProvider), psi == 0 ? 0 : psi.ToString(format, formatProvider), theta == 0 ? 0 : theta.ToString(format, formatProvider));
         }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static EulerAngles ToUnityAngle(EulerAngles value)
         {
@@ -178,28 +168,36 @@ namespace DATA
         public double pphi;
         public double ppsi;
         public double ptheta;
+
         public DimensionlessPulses(double pphi, double ppsi, double ptheta)
         {
             this.pphi = pphi;
             this.ppsi = ppsi;
             this.ptheta = ptheta;
         }
+
         public DimensionlessPulses(double ppsi, double ptheta)
         {
             pphi = 0;
             this.ppsi = ppsi;
             this.ptheta = ptheta;
         }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DimensionlessPulses operator +(DimensionlessPulses a, DimensionlessPulses b) => new(a.pphi + b.pphi, a.ppsi + b.ppsi, a.ptheta + b.ptheta);
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DimensionlessPulses operator -(DimensionlessPulses a, DimensionlessPulses b) => new(a.pphi - b.pphi, a.ppsi - b.ppsi, a.ptheta - b.ptheta);
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DimensionlessPulses operator -(DimensionlessPulses a) => new(0.0 - a.pphi, 0.0 - a.ppsi, 0.0 - a.ptheta);
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DimensionlessPulses operator *(DimensionlessPulses a, double d) => new(a.pphi * d, a.ppsi * d, a.ptheta * d);
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DimensionlessPulses operator *(double d, DimensionlessPulses a) => new(a.pphi * d, a.ppsi * d, a.ptheta * d);
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DimensionlessPulses operator /(DimensionlessPulses a, double d) => new(a.pphi / d, a.ppsi / d, a.ptheta / d);
         public override bool Equals(object other) => other is not EulerAngles ? false : Equals((EulerAngles)other);
@@ -212,6 +210,7 @@ namespace DATA
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public string ToString(string format) => ToString(format, null);
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public string ToString(string format, IFormatProvider formatProvider)
         {
