@@ -25,7 +25,7 @@ public class Run : MonoBehaviour
     public double ValueParameter { get; private set; } = 1; // для прец по 0,5 beta 0.489999999999999990 * 3 / 3.5 0.510000000000000008 * 3 / 3.5
     // период 6.171006218
     public double Beta { get; private set; } = 0;
-    public double r0 { get; private set; } = 0;
+    public double r_min { get; private set; } = 0;
     public double PhiDot0 { get; private set; } = 0;
     public double Height { get; private set; } = 1000000;
     //planet
@@ -40,8 +40,7 @@ public class Run : MonoBehaviour
     public double Epsilon { get; private set; } = 10e-20;//0.0001 000001 10e-15 25
     public int ApproximationNumberKeplerEquation { get; private set; } = 3;
     public int Scale { get; private set; } = 1000000;
-    public ODEMethod odeMethod { get; private set; } = ODEMethod.RungeKutta_Fehlberg_78;
-    public RegularPrecessions regularPrecession { get; private set; } = RegularPrecessions.Conical;
+    public RegularPrecession regularPrecession { get; private set; } = RegularPrecession.Conical;
     public WaysSolveKeplerEquation waysSolveKeplerEquation { get; private set; } = WaysSolveKeplerEquation.Denby;
 
 
@@ -64,7 +63,7 @@ public class Run : MonoBehaviour
         if (SelectingParameter == 0)
             Beta = ValueParameter;
         else if (SelectingParameter == 1)
-            r0 = ValueParameter;
+            r_min = ValueParameter;
         else
             PhiDot0 = ValueParameter;
         if (CheckInputData())
@@ -98,9 +97,8 @@ public class Run : MonoBehaviour
     public void NewApproximationNumberKeplerEquation(string value) => Instance.ApproximationNumberKeplerEquation = int.Parse(value);
     public void NewEpsilon(string value) => Instance.Epsilon = double.Parse(value);
     public void NewScale(string value) => Instance.Scale = int.Parse(value);
-    public void NewODE(int value) => Instance.odeMethod = (ODEMethod)value;
     public void SelectParameter(int value) => Instance.SelectingParameter = value;
-    public void NewRP(int value) => Instance.regularPrecession = (RegularPrecessions)value;
+    public void NewRP(int value) => Instance.regularPrecession = (RegularPrecession)value;
     public void NewTupeApr(int value) => Instance.waysSolveKeplerEquation = (WaysSolveKeplerEquation)value;
     public bool CheckInputData()
     {
@@ -110,7 +108,7 @@ public class Run : MonoBehaviour
         if (Instance.SelectingParameter == 0)
             beta = Instance.Beta;
         else if (Instance.SelectingParameter == 1)
-            beta = Instance.r0 / omega0;
+            beta = Instance.r_min / omega0;
         else
             beta = (((Math.Sin(Theta0) * Math.Cos(Psi0) * Math.Cos(Theta0) * Math.Pow(1 + e, 2) - Ppsi0) * Math.Cos(Theta0) 
                 - Instance.PhiDot0 * Math.Pow(Math.Sin(Theta0), 2) * Math.Pow(1 + e, 2)) * (e - 1) * Math.Sqrt(1 - Math.Pow(e, 2)) 
@@ -122,19 +120,19 @@ public class Run : MonoBehaviour
             Debug.LogError($"alpha error: 0<={alpha}<2");
             return false;
         }
-        if (Instance.regularPrecession == RegularPrecessions.Hyperboloidal && Math.Abs(alpha * beta) > 1)
+        if (Instance.regularPrecession == RegularPrecession.Hyperboloidal && Math.Abs(alpha * beta) > 1)
         {
             Debug.LogError($"|Alpha * Beta| > 1 <=> {Math.Abs(alpha * beta)} > 1");
             Debug.LogWarning($"Alpha = C/A {alpha}");
-            Debug.LogWarning($"Beta = r0/omega0 {beta}");
+            Debug.LogWarning($"Beta = r_pericenter/omega0 {beta}");
             Debug.LogWarning($"Omega0 = {omega0}, если много, увеличьте расстояние спутника");
             return false;
         }
-        if (Instance.regularPrecession == RegularPrecessions.Conical && (Math.Abs(alpha * beta) > Math.Abs(3 * alpha - 4) || alpha == 4d / 3)) 
+        if (Instance.regularPrecession == RegularPrecession.Conical && (Math.Abs(alpha * beta) > Math.Abs(3 * alpha - 4) || alpha == 4d / 3)) 
         {
             Debug.LogError($"|Alpha * Beta| > |3 * Alpha - 4| <=> {Math.Abs(alpha * beta)} > {Math.Abs(3 * alpha - 4)} или Alpha = 4 / 3 <=> {alpha} = {4d / 3}");
             Debug.LogWarning($"Alpha = C/A {alpha}");
-            Debug.LogWarning($"Beta = r0/omega0 {beta}");
+            Debug.LogWarning($"Beta = r_pericenter/omega0 {beta}");
             Debug.LogWarning($"Omega0 = {omega0}, если много, увеличьте расстояние спутника");
             return false;
         }

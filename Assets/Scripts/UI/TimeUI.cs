@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UISinulation : MonoBehaviour
+public class TimeUI : MonoBehaviour
 {
     [SerializeField] private Satellite _satellite = null;
     [SerializeField] private TMP_Text Speed = null;
@@ -14,7 +14,7 @@ public class UISinulation : MonoBehaviour
     [SerializeField] private TMP_Text Second = null;
     public void ChangeSpeed(float speed)
     {
-        _satellite._speedTime = (int)speed;
+        //_satellite.SpeedTime = (int)speed;
         Speed.text =  speed.ToString();
     }
     //public void ChangeTimeIndex(float speed) => _satellite.TimeIndex = (int)speed;

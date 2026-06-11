@@ -23,40 +23,40 @@ public class Save
     private readonly string EClassic = "/EClassic.txt";
     private readonly string EDDE = "/EDDE.txt";
     private readonly string EDM = "/EDM.txt";
-    public void SaveGame(Data data, ODEMethod odeMethod, WaysSolveKeplerEquation waysSolveKeplerEquation)
+    public void SaveGame(Data data, WaysSolveKeplerEquation waysSolveKeplerEquation)
     {
         //string filePathODE = Application.dataPath + RKF45;
         string filePathODE = Path;
         string filePathE = Path;
 
-        if (odeMethod == ODEMethod.RungeKutta_DormandPrince_78)
-            filePathODE += RKDP78;
-        else if (odeMethod == ODEMethod.RungeKutta_Fehlberg_78)
-            filePathODE += RKF78;
-        else if (odeMethod == ODEMethod.RungeKutta_Fehlberg_56)
-            filePathODE += RKF56;
-        else if (odeMethod == ODEMethod.RungeKutta_Verner_56)
-            filePathODE += RKV56;
-        else if (odeMethod == ODEMethod.RungeKutta_DormandPrince_45)
-            filePathODE += RKDP45;
-        else if (odeMethod == ODEMethod.RungeKutta_DormandPrince_45_1)
-            filePathODE += RKDP45_1;
-        else if (odeMethod == ODEMethod.RungeKutta_Fehlberg_54)
-            filePathODE += RKF45;
-        else if (odeMethod == ODEMethod.RungeKutta_England_54)
-            filePathODE += RKE;
-        else if (odeMethod == ODEMethod.RungeKutta_CashKarp_54)
-            filePathODE += RKCK;
-        else if (odeMethod == ODEMethod.RungeKutta_BogackiShampine_45)
-            filePathODE += RKBS;
-        else if (odeMethod == ODEMethod.RungeKutta_Merson_45)
-            filePathODE += RKM;
-        else if (odeMethod == ODEMethod.RungeKutta_Claccic)
-            filePathODE += RKClassic;
-        else if (odeMethod == ODEMethod.RungeKutta_3_8)
-            filePathODE += RK3_8;
-        else
-            filePathODE += RKT;
+        //if (odeMethod == ODEMethod.RungeKutta_DormandPrince_78)
+        //    filePathODE += RKDP78;
+        //else if (odeMethod == ODEMethod.RungeKutta_Fehlberg_78)
+        //    filePathODE += RKF78;
+        //else if (odeMethod == ODEMethod.RungeKutta_Fehlberg_56)
+        //    filePathODE += RKF56;
+        //else if (odeMethod == ODEMethod.RungeKutta_Verner_56)
+        //    filePathODE += RKV56;
+        //else if (odeMethod == ODEMethod.RungeKutta_DormandPrince_45)
+        //    filePathODE += RKDP45;
+        //else if (odeMethod == ODEMethod.RungeKutta_DormandPrince_45_1)
+        //    filePathODE += RKDP45_1;
+        //else if (odeMethod == ODEMethod.RungeKutta_Fehlberg_54)
+        //    filePathODE += RKF45;
+        //else if (odeMethod == ODEMethod.RungeKutta_England_54)
+        //    filePathODE += RKE;
+        //else if (odeMethod == ODEMethod.RungeKutta_CashKarp_54)
+        //    filePathODE += RKCK;
+        //else if (odeMethod == ODEMethod.RungeKutta_BogackiShampine_45)
+        //    filePathODE += RKBS;
+        //else if (odeMethod == ODEMethod.RungeKutta_Merson_45)
+        //    filePathODE += RKM;
+        //else if (odeMethod == ODEMethod.RungeKutta_Claccic)
+        //    filePathODE += RKClassic;
+        //else if (odeMethod == ODEMethod.RungeKutta_3_8)
+        //    filePathODE += RK3_8;
+        //else
+        //    filePathODE += RKT;
 
         if (waysSolveKeplerEquation == WaysSolveKeplerEquation.Iteration_method)
             filePathE += EClassic;
