@@ -43,7 +43,6 @@ public class Run : MonoBehaviour
     public KeplerMethod waysSolveKeplerEquation { get; private set; } = KeplerMethod.Dendy;
 
 
-    public Save save;
     private void Awake()
     {
         if (Instance != null)
@@ -53,7 +52,6 @@ public class Run : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
-        save = new Save();
         //data = new(regularPrecession);
     }
     public void StartSimulation()
