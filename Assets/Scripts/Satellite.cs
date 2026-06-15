@@ -1,4 +1,4 @@
-using Assets.Scripts;
+using Assets.Scripts.Orbits;
 using System;
 using UnityEngine;
 

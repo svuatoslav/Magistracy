@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using static System.Math;
 
-namespace Assets.Scripts
+namespace Assets.Scripts.Orbits
 {
     public class Elliptic : Orbit
     {

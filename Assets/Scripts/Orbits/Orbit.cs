@@ -1,6 +1,5 @@
 using UnityEngine;
 
-
 public abstract class Orbit : MonoBehaviour, IODEMotions
 {
     [SerializeField] protected Planet _planet = null;
