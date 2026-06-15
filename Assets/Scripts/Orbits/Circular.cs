@@ -8,7 +8,8 @@ namespace Assets.Scripts.Orbits
         [SerializeField] private double _r = 0;
 
         public double R { get => _r; }
-        public void ApplyConfig(OrbitConfig orbitConfig)
+
+        public override void ApplyConfig(OrbitConfig orbitConfig)
         {
             _r = orbitConfig.r_pericenter;
         }

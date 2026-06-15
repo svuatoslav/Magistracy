@@ -3,12 +3,12 @@
 [Serializable]
 public sealed class PlanetConfig
 {
-    public double Mass { get; }
+    public double Mu { get; }
     public double Radius { get; }
 
-    public PlanetConfig(double mass, double radius)
+    public PlanetConfig(double mu, double radius)
     {
-        Mass = mass;
+        Mu = mu;
         Radius = radius;
     }
 }

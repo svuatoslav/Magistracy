@@ -1,8 +1,10 @@
+using Assets;
+using Assets.Scripts.DataSerialiizers;
 using Assets.Scripts.Orbits;
 using System;
 using UnityEngine;
 
-public class Satellite : MonoBehaviour
+public class Satellite : MonoBehaviour, IApplyConfig<SatelliteConfig>
 {
     [SerializeField] private Planet _planet = null;
     [SerializeField] private Orbit _orbit = null;
@@ -42,10 +44,10 @@ public class Satellite : MonoBehaviour
     public double Ppsi => _ppsi;
     public double Ptheta => _ptheta;
 
-    public void ApplyConfig(SatelliteConfig satelliteConfig, Planet planet, Orbit orbit)
+    public void ApplyConfig(SatelliteConfig satelliteConfig)
     {
         Phi0 = satelliteConfig.Phi;
-        Psi0= satelliteConfig.Psi;
+        Psi0 = satelliteConfig.Psi;
         Theta0 = satelliteConfig.Theta;
         Pphi0 = satelliteConfig.Pphi;
         Ppsi0 = satelliteConfig.Ppsi;
@@ -56,10 +58,13 @@ public class Satellite : MonoBehaviour
         _r0 = satelliteConfig.r0;
 
         _alpha = satelliteConfig.C / satelliteConfig.AB;
-        _beta = satelliteConfig.r0 / orbit.Omega0;
+        _beta = satelliteConfig.r0 / _orbit.Omega0;
+    }
 
-        _planet = planet;
-        _orbit = orbit;
+    private void Awake()
+    {
+        var jSONManager = new JSONManager();
+        ApplyConfig(jSONManager.Read<SatelliteConfig>("")); // пока так
     }
 
     private void Start()
@@ -73,30 +78,43 @@ public class Satellite : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //if (true)
-        //{
-        //    transform.position = LinearMotion();
-        //    gameObject.transform.rotation = AttitudeMotion();
+        if (true)
+        {
+            transform.position = LinearMotion();
+            gameObject.transform.rotation = AttitudeMotion();
 
-        //    _UISimulation.UITime(_timeIndex);
-        //    ChangeTime();
-        //}
+            _UISimulation.UITime(_timeIndex);
+            ChangeTime();
+        }
     }
 
     private void ChangeTime()
     {
+        throw new NotImplementedException();
         //if (_timeIndex + SpeedTime < Angle.Length)
         //    _timeIndex += SpeedTime;
         //else if (_timeIndex < Angle.Length - 1)
         //    _timeIndex++;
     }
 
-    //private double r(double nu) => p / (1 + _orbit.Eccentricity * Math.Cos(nu));
+    private double r(double nu)
+    {
+        throw new NotImplementedException();
+        //return p / (1 + _orbit.E * Math.Cos(nu));
+    }
 
-    //private Vector3 LinearMotion() => _planet.transform.position + new Vector3(
-    //    (float)(-r(Run.Instance.data.Nu[_timeIndex]) * Math.Sin(Run.Instance.data.Nu[_timeIndex])),
-    //    0, 
-    //    (float)(r(Run.Instance.data.Nu[_timeIndex]) * Math.Cos(Run.Instance.data.Nu[_timeIndex])));//  / Run.Instance.Scale
+    private Vector3 LinearMotion() 
+    {
+        throw new NotImplementedException();
+        //_planet.transform.position + new Vector3(
+        //(float)(-r(Run.Instance.data.Nu[_timeIndex]) * Math.Sin(Run.Instance.data.Nu[_timeIndex])),
+        //0,
+        //(float)(r(Run.Instance.data.Nu[_timeIndex]) * Math.Cos(Run.Instance.data.Nu[_timeIndex])));//  / Run.Instance.Scale
+    }
 
-    //private Quaternion AttitudeMotion() => Quaternion.Euler(new Vector3((float)Angle[_timeIndex].phi, (float)(Angle[_timeIndex].psi - Run.Instance.data.Nu[_timeIndex] * Mathf.Rad2Deg), (float)Angle[_timeIndex].theta));
+    private Quaternion AttitudeMotion() 
+    {
+        throw new NotImplementedException();
+        //Quaternion.Euler(new Vector3((float)Angle[_timeIndex].phi, (float)(Angle[_timeIndex].psi - Run.Instance.data.Nu[_timeIndex] * Mathf.Rad2Deg), (float)Angle[_timeIndex].theta)); 
+    }
 }

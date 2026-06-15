@@ -1,6 +1,8 @@
+using Assets;
+using Assets.Scripts.DataSerialiizers;
 using UnityEngine;
 
-public abstract class Orbit : MonoBehaviour, IODEMotions
+public abstract class Orbit : MonoBehaviour, IODEMotions, IApplyConfig<OrbitConfig>
 {
     [SerializeField] protected Planet _planet = null;
     [SerializeField] protected Satellite _Satellite = null;
@@ -10,12 +12,17 @@ public abstract class Orbit : MonoBehaviour, IODEMotions
 
     protected LineRenderer lineRenderer;
 
-    protected virtual void Awake() // проверить
+    protected void Awake() // проверить
     {
         lineRenderer = transform.GetComponent<LineRenderer>();
         lineRenderer.positionCount = (int)(360d / 1) + 1;
         lineRenderer.SetPositions(DrawOrbit(1, Run.Instance.Scale));
+
+        var jSONManager = new JSONManager();
+        ApplyConfig(jSONManager.Read<OrbitConfig>("")); // дополнить путь
     }
+
+    public abstract void ApplyConfig(OrbitConfig orbitConfig);
 
     public abstract double H(Satellite satellite, double nu);
 

@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -27,6 +28,11 @@ public sealed class SimulationSetupUI : MonoBehaviour
     private void OnDestroy()
     {
         startButton.onClick.RemoveListener(OnStartClicked);
+    }
+
+    public void StartSimulation()
+    {
+        throw new NotImplementedException();
     }
 
     private void OnStartClicked()

@@ -1,3 +1,5 @@
+using Assets.Scripts.DataSerialiizers;
+using MathNet.Numerics.Distributions;
 using UnityEngine;
 
 public class Planet : MonoBehaviour
@@ -8,13 +10,15 @@ public class Planet : MonoBehaviour
     [SerializeField] private double G = 6.67428e-11; //  Н · м²/кг² или  м³⋅с−²⋅кг−1
     //internal double n => Math.Sqrt(mu * Math.Pow((1 - Eccentricity) / _satellite.r_min, 3));//Math.Sqrt(g*Math.Pow(R,2)/Math.Pow(_satellite.p / (1 - Math.Pow(Eccentricity, 2)), 3));
 
-    public void AddSatellite(Satellite satellite)
+    public void ApplyConfig(PlanetConfig planetConfig)
     {
-        if (_satellite is not null)
-        {
-            Debug.LogWarning("The planet has a satellite");
-            return;
-        }
-        _satellite = satellite;
+        R = planetConfig.Radius;
+        Mu = planetConfig.Mu;
+    }
+
+    private void Awake()
+    {
+        var jSONManager = new JSONManager();
+        ApplyConfig(jSONManager.Read<PlanetConfig>("")); // пока так
     }
 }

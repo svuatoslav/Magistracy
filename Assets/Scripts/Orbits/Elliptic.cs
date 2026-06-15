@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.DataSerialiizers;
+using UnityEngine;
 using static System.Math;
 
 namespace Assets.Scripts.Orbits
@@ -21,7 +22,7 @@ namespace Assets.Scripts.Orbits
         public double P => _focalParameter;
         public double C => _focalLength;
 
-        public void ApplyConfig(OrbitConfig orbitConfig)
+        public override void ApplyConfig(OrbitConfig orbitConfig)
         {
             _eccentricity = orbitConfig.Eccentricity;
             _r_pericenter = orbitConfig.r_pericenter;

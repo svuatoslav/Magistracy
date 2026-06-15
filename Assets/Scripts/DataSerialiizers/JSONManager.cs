@@ -6,6 +6,7 @@ namespace Assets.Scripts.DataSerialiizers
     public class JSONManager : IDataManager
     {
         private readonly string _format = ".json";
+
         public T Read<T>(string path) where T : class
         {
             try { return JsonConvert.DeserializeObject<T>(File.ReadAllText(Path.Combine(path + _format))); }
