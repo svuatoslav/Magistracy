@@ -1,47 +1,11 @@
-using System;
+ï»¿using System;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using static System.Math;
-namespace DATA
+
+namespace Assets.Scripts.Structs
 {
-    public class Data
-    {
-        internal readonly Orbits orbit;
-        internal readonly RegularPrecession regularPrecession;
-        internal (EulerAngles, DimensionlessPulses)[] MotionsAngle;
-        internal double[] E;
-        internal double[] Nu;
-        internal double[] NuAbs;
-        internal double[] H;
-        internal double[] FlightTime;
-        public Data(RegularPrecession regularPrecession)
-        {
-            this.regularPrecession = regularPrecession;
-        }
-    }
-
-    public enum RegularPrecession
-    {
-        MyParametrs,
-        Cylindrical,
-        Hyperboloidal,
-        Conical,
-    }
-
-    public enum WaysSolveKeplerEquation
-    {
-        Iteration_method,
-        DecompositionEccentricity,
-        Denby
-    }
-
-    public enum Orbits
-    {
-        Circular,
-        Elliptical
-    }
-
     [Serializable]
     public struct EulerAngles : IEquatable<EulerAngles>, IFormattable
     {
@@ -91,6 +55,7 @@ namespace DATA
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static EulerAngles operator /(EulerAngles a, double d) => new(a.phi / d, a.psi / d, a.theta / d);
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(EulerAngles a, EulerAngles b) => a.phi == b.phi && a.psi == b.psi && a.theta == b.theta;
 
@@ -99,15 +64,6 @@ namespace DATA
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override bool Equals(object other) => other is not EulerAngles ? false : Equals((EulerAngles)other);
-        //public override bool Equals(object other)
-        //{
-        //    if (other is not EulerAngles)
-        //    {
-        //        return false;
-        //    }
-
-        //    return Equals((EulerAngles)other);
-        //}
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(EulerAngles other) => phi.Equals(other.phi) && psi.Equals(other.psi) && theta.Equals(other.theta);
@@ -134,10 +90,12 @@ namespace DATA
         {
             double alpha, beta, gamma;
             double betaSin, betaCos, gammaSin, gammaCos;
+
             alpha = Asin(Sin(value.theta) * Cos(value.phi));
+
             if (Sqrt(1 - Pow(Sin(value.theta) * Cos(value.phi), 2)) == 0)
             {
-                //Debug.LogError($"Íå óäàëîñü ïåðåâåñòè Óãëû Ýéëåðà â Unity\nÇíàìåíàòåëü Sqrt(1 - ((Sin(value.theta) * Cos(value.phi)) ^ 2) = 0 \n{Sqrt(1 - Pow(Sin(value.theta) * Cos(value.phi), 2))} \nïðè {value}");
+                //Debug.LogError($"ÐÐµ ÑƒÐ´Ð°Ð»Ð¾ÑÑŒ Ð¿ÐµÑ€ÐµÐ²ÐµÑÑ‚Ð¸ Ð£Ð³Ð»Ñ‹ Ð­Ð¹Ð»ÐµÑ€Ð° Ð² Unity\nÐ—Ð½Ð°Ð¼ÐµÐ½Ð°Ñ‚ÐµÐ»ÑŒ Sqrt(1 - ((Sin(value.theta) * Cos(value.phi)) ^ 2) = 0 \n{Sqrt(1 - Pow(Sin(value.theta) * Cos(value.phi), 2))} \nÐ¿Ñ€Ð¸ {value}");
                 betaSin = Sin(value.phi) * Sin(value.theta) / double.Epsilon;
                 betaCos = Cos(value.theta) / double.Epsilon;
                 gammaSin = (Sin(value.phi) * Cos(value.psi) + Cos(value.phi) * Sin(value.psi) * Cos(value.theta)) / double.Epsilon;
@@ -150,76 +108,20 @@ namespace DATA
                 gammaSin = (Sin(value.phi) * Cos(value.psi) + Cos(value.phi) * Sin(value.psi) * Cos(value.theta)) / Sqrt(1 - Pow(Sin(value.theta) * Cos(value.phi), 2));
                 gammaCos = (Cos(value.phi) * Cos(value.psi) * Cos(value.theta) - Sin(value.phi) * Sin(value.psi)) / Sqrt(1 - Pow(Sin(value.theta) * Cos(value.phi), 2));
             }
+
             beta = Atan2(betaSin, betaCos);
             gamma = Atan2(gammaSin, gammaCos);
+
             return new EulerAngles(alpha, beta, gamma);
         }
+
         public static EulerAngles RotationAroundY(EulerAngles value, double angle)
         {
             value.phi = value.phi * Cos(angle) - value.theta * Sin(angle);
             value.theta = value.phi * Sin(angle) + value.theta * Cos(angle);
             return value;
         }
+
         public static EulerAngles ToDegrees(EulerAngles value) => new EulerAngles(value.phi, value.psi, value.theta) * Mathf.Rad2Deg;
-    }
-    [Serializable]
-    public struct DimensionlessPulses : IEquatable<DimensionlessPulses>, IFormattable
-    {
-        public double pphi;
-        public double ppsi;
-        public double ptheta;
-
-        public DimensionlessPulses(double pphi, double ppsi, double ptheta)
-        {
-            this.pphi = pphi;
-            this.ppsi = ppsi;
-            this.ptheta = ptheta;
-        }
-
-        public DimensionlessPulses(double ppsi, double ptheta)
-        {
-            pphi = 0;
-            this.ppsi = ppsi;
-            this.ptheta = ptheta;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DimensionlessPulses operator +(DimensionlessPulses a, DimensionlessPulses b) => new(a.pphi + b.pphi, a.ppsi + b.ppsi, a.ptheta + b.ptheta);
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DimensionlessPulses operator -(DimensionlessPulses a, DimensionlessPulses b) => new(a.pphi - b.pphi, a.ppsi - b.ppsi, a.ptheta - b.ptheta);
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DimensionlessPulses operator -(DimensionlessPulses a) => new(0.0 - a.pphi, 0.0 - a.ppsi, 0.0 - a.ptheta);
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DimensionlessPulses operator *(DimensionlessPulses a, double d) => new(a.pphi * d, a.ppsi * d, a.ptheta * d);
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DimensionlessPulses operator *(double d, DimensionlessPulses a) => new(a.pphi * d, a.ppsi * d, a.ptheta * d);
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DimensionlessPulses operator /(DimensionlessPulses a, double d) => new(a.pphi / d, a.ppsi / d, a.ptheta / d);
-        public override bool Equals(object other) => other is not EulerAngles ? false : Equals((EulerAngles)other);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(DimensionlessPulses other) => pphi.Equals(other.pphi) && ppsi.Equals(other.ppsi) && ptheta.Equals(other.ptheta);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString() => ToString(null, null);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ToString(string format) => ToString(format, null);
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ToString(string format, IFormatProvider formatProvider)
-        {
-            if (string.IsNullOrEmpty(format))
-                format = "F10";
-
-            formatProvider ??= CultureInfo.InvariantCulture.NumberFormat;
-
-            return string.Format("(pphi: {0}, ppsi: {1}, ptheta: {2})", pphi == 0 ? 0 : pphi.ToString(format, formatProvider), ppsi == 0 ? 0 : ppsi.ToString(format, formatProvider), ptheta == 0 ? 0 : ptheta.ToString(format, formatProvider));
-        }
     }
 }

@@ -1,6 +1,5 @@
 using UnityEngine;
 using System;
-using DATA;
 using UnityEngine.SceneManagement;
 
 public class Run : MonoBehaviour
@@ -41,11 +40,10 @@ public class Run : MonoBehaviour
     public int ApproximationNumberKeplerEquation { get; private set; } = 3;
     public int Scale { get; private set; } = 1000000;
     public RegularPrecession regularPrecession { get; private set; } = RegularPrecession.Conical;
-    public WaysSolveKeplerEquation waysSolveKeplerEquation { get; private set; } = WaysSolveKeplerEquation.Denby;
+    public KeplerMethod waysSolveKeplerEquation { get; private set; } = KeplerMethod.Dendy;
 
 
     public Save save;
-    public Data data;
     private void Awake()
     {
         if (Instance != null)
@@ -56,7 +54,7 @@ public class Run : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
         save = new Save();
-        data = new(regularPrecession);
+        //data = new(regularPrecession);
     }
     public void StartSimulation()
     {
@@ -99,7 +97,7 @@ public class Run : MonoBehaviour
     public void NewScale(string value) => Instance.Scale = int.Parse(value);
     public void SelectParameter(int value) => Instance.SelectingParameter = value;
     public void NewRP(int value) => Instance.regularPrecession = (RegularPrecession)value;
-    public void NewTupeApr(int value) => Instance.waysSolveKeplerEquation = (WaysSolveKeplerEquation)value;
+    public void NewTupeApr(int value) => Instance.waysSolveKeplerEquation = (KeplerMethod)value;
     public bool CheckInputData()
     {
         double alpha = Instance.C / Instance.AB;

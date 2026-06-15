@@ -1,4 +1,4 @@
-using DATA;
+using Assets.Scripts.Structs;
 using UnityEngine;
 
 public class Axes : MonoBehaviour
