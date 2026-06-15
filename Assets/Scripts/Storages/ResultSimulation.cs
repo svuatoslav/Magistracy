@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using MathNet.Numerics.LinearAlgebra;
 
-namespace Assets.Storages
+namespace Assets.Scripts.Storages
 {
     public class ResultSimulation : IStorage
     {
