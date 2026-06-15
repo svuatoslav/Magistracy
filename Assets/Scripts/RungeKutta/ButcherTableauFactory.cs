@@ -21,7 +21,7 @@ namespace Assets.Scripts.RungeKutta
                     { 1, -1, 1 } },
                     new double[4] { 1d / 8, 3d / 8, 3d / 8, 1d / 8 },
                     new double[4] { 0, 1d / 3, 2d / 3, 1 }, 4);
-                case RungeKuttaMethod.M45:
+                case RungeKuttaMethod.Merson45:
                     return new EmbeddedButcherTableau(new double[4, 4] {
                     { 1d / 3, 0, 0, 0 },
                     { 1d / 6, 1d / 6, 0, 0 },
@@ -32,7 +32,7 @@ namespace Assets.Scripts.RungeKutta
                         new double[5] { 0, 1d / 3, 1d / 3, 1, 1 },
                         4,
                         5);
-                case RungeKuttaMethod.CK54:
+                case RungeKuttaMethod.CashKarp54:
                     return new EmbeddedButcherTableau(new double[5, 5] {
                         { 1d / 5, 0, 0, 0,0 },
                         { 3d / 40, 9d / 40, 0, 0,0 },
@@ -44,7 +44,7 @@ namespace Assets.Scripts.RungeKutta
                         new double[6] { 0, 1d / 5, 3d / 10, 3d / 5, 1, 7d / 8 },
                         5,
                         4);
-                case RungeKuttaMethod.E54:
+                case RungeKuttaMethod.England54:
                     return new EmbeddedButcherTableau(new double[5, 5] {
                     { 1d / 2, 0, 0, 0,0 },
                     { 1d / 4, 1d / 4, 0, 0,0 },
@@ -56,7 +56,7 @@ namespace Assets.Scripts.RungeKutta
                         new double[6] { 0, 1d / 2, 1d / 2, 1, 2d / 3, 1d / 5 },
                         5,
                         4);
-                case RungeKuttaMethod.F54:
+                case RungeKuttaMethod.Fehlberg54:
                     return new EmbeddedButcherTableau(new double[5, 5] {
                     { 1d / 4, 0, 0, 0, 0 },
                     { 3d / 32, 9d / 32, 0, 0, 0 },
@@ -68,7 +68,7 @@ namespace Assets.Scripts.RungeKutta
                         new double[6] { 0, 1d / 4, 3d / 8, 12d / 13, 1, 1d / 2 },
                         4,
                         5);
-                case RungeKuttaMethod.DP45:
+                case RungeKuttaMethod.DormandPrince45:
                     return new EmbeddedButcherTableau(new double[6, 6] {
                     { 1d / 5, 0, 0, 0, 0, 0 },
                     { 3d / 40, 9d / 40, 0, 0, 0, 0 },
@@ -81,7 +81,7 @@ namespace Assets.Scripts.RungeKutta
                         new double[7] { 0, 1d / 5, 3d / 10, 4d / 5, 8d / 9, 1, 1 },
                         4,
                         5);
-                case RungeKuttaMethod.DP45_1:
+                case RungeKuttaMethod.DormandPrince45_1:
                     return new EmbeddedButcherTableau(new double[6, 6] {
                     { 2d / 9, 0, 0, 0, 0, 0 },
                     { 1d / 12, 1d / 4, 0, 0, 0, 0 },
@@ -94,7 +94,7 @@ namespace Assets.Scripts.RungeKutta
                         new double[7] { 0, 1d / 5, 3d / 10, 4d / 5, 8d / 9, 1, 1 },
                         4,
                         5);
-                case RungeKuttaMethod.BS45:
+                case RungeKuttaMethod.BogackiShampine45:
                     return new EmbeddedButcherTableau(new double[7, 7] {
                     { 1d / 6, 0, 0, 0, 0, 0, 0 },
                     { 2d / 27, 4d / 27, 0, 0, 0, 0, 0 },
@@ -108,7 +108,7 @@ namespace Assets.Scripts.RungeKutta
                         new double[8] { 0, 1d / 6, 2d / 9, 3d / 7, 2d / 3, 3d / 4, 1, 1 },
                         4,
                         5);
-                case RungeKuttaMethod.V56:
+                case RungeKuttaMethod.Verner56:
                     return new EmbeddedButcherTableau(new double[7, 7] {
                     { 1d / 18, 0, 0, 0, 0, 0, 0 },
                     { -1d / 12, 1d / 4, 0, 0, 0, 0, 0 },
@@ -122,7 +122,7 @@ namespace Assets.Scripts.RungeKutta
                         new double[8] { 0, 1d / 18, 1d / 6, 2d / 9, 2d / 3, 1, 8d / 9, 1 },
                         6,
                         5);
-                case RungeKuttaMethod.F56:
+                case RungeKuttaMethod.Fehlberg56:
                     return new EmbeddedButcherTableau(new double[7, 7] {
                     { 1d / 6, 0, 0, 0, 0, 0, 0 },
                     { 4d / 75, 16d / 75, 0, 0, 0, 0, 0 },
@@ -136,7 +136,7 @@ namespace Assets.Scripts.RungeKutta
                         new double[8] { 0, 1d / 6, 4d / 15, 2d / 3, 4d / 5, 1, 0, 1 },
                         6,
                         5);
-                case RungeKuttaMethod.F78:
+                case RungeKuttaMethod.Fehlberg78:
                     return new EmbeddedButcherTableau(new double[12, 12] {
                     { 2d / 27, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
                     { 1d / 36, 1d / 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -155,7 +155,7 @@ namespace Assets.Scripts.RungeKutta
                         new double[13] { -41d / 840, 0, 0, 0, 0, 0, 0, 0, 0, 0, -41d / 840, 41d / 840, 41d / 840 },
                         7,
                         8);
-                case RungeKuttaMethod.DP78:
+                case RungeKuttaMethod.DormandPrince78:
                     return new EmbeddedButcherTableau(new double[12, 12] {
                     { 1d / 18, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
                     { 1d / 48, 1d / 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
