@@ -1,13 +1,18 @@
 ﻿using Assets.Scripts.DataSerialiizers;
-using System;
-using System.IO;
 using MathNet.Numerics.LinearAlgebra;
+using System;
+using System.Globalization;
+using System.IO;
+using System.Text;
 
 namespace Assets.Scripts.Storages
 {
+    [Serializable]
     public class ResultSimulation : IStorage
     {
+        [NonSerialized]
         private readonly IDataManager _dataManager;
+        [NonSerialized]
         private string _path;
 
         private double[] _time;
@@ -28,48 +33,44 @@ namespace Assets.Scripts.Storages
             _H = H;
         }
 
-        public void Save()
-        {
-            throw new NotImplementedException();
-            //using var sw = new StreamWriter(FullPath);
-            //{
-            //    for (int i = 0; i < data.FlightTime.Length; i++)
-            //        swE.Write($"{(float)data.FlightTime[i]}\t".Replace(",", "."));
-            //    swE.WriteLine();
-            //    for (int i = 0; i < data.E.Length; i++)
-            //        swE.Write($"{(float)data.E[i]}\t".Replace(",", "."));
-            //    swE.WriteLine();
-            //    for (int i = 0; i < data.Nu.Length; i++)
-            //        swE.Write($"{(float)data.Nu[i]}\t".Replace(",", "."));
-            //    swE.WriteLine();
-            //    for (int i = 0; i < data.NuAbs.Length; i++)
-            //        swE.Write($"{(float)data.NuAbs[i]}\t".Replace(",", "."));
-            //}
+        // Использовать _dataManager для сохранения данных класса
+        public void Save() => _dataManager.Write(this, _path);
 
-            //using var swODE = new StreamWriter(filePathODE);
-            //for (int i = 0; i < data.NuAbs.Length; i += 50)
-            //    swODE.Write($"{(float)data.NuAbs[i]}\t".Replace(",", "."));//time = Math.Round(time + deltaTime, 3);
-            //swODE.WriteLine();
-            //for (int i = 0; i < data.MotionsAngle.Length; i += 50)
-            //    swODE.Write($"{(float)data.MotionsAngle[i].Item1.phi}\t".Replace(",", "."));
-            //swODE.WriteLine();
-            //for (int i = 0; i < data.MotionsAngle.Length; i += 50)
-            //    swODE.Write($"{(float)data.MotionsAngle[i].Item1.psi}\t".Replace(",", "."));
-            //swODE.WriteLine();
-            //for (int i = 0; i < data.MotionsAngle.Length; i += 50)
-            //    swODE.Write($"{(float)data.MotionsAngle[i].Item1.theta}\t".Replace(",", "."));
-            //swODE.WriteLine();
-            //for (int i = 0; i < data.MotionsAngle.Length; i += 50)
-            //    swODE.Write($"{(float)data.MotionsAngle[i].Item2.pphi}\t".Replace(",", "."));
-            //swODE.WriteLine();
-            //for (int i = 0; i < data.MotionsAngle.Length; i += 50)
-            //    swODE.Write($"{(float)data.MotionsAngle[i].Item2.ppsi}\t".Replace(",", "."));
-            //swODE.WriteLine();
-            //for (int i = 0; i < data.MotionsAngle.Length; i += 50)
-            //    swODE.Write($"{(float)data.MotionsAngle[i].Item2.ptheta}\t".Replace(",", "."));
-            //swODE.WriteLine();
-            //for (int i = 0; i < data.H.Length; i += 50)
-            //    swODE.Write($"{(float)data.H[i]}\t".Replace(",", "."));
+        /// <summary>
+        /// Формирует строковое представление сериализуемых полей класса в табличном виде.
+        /// </summary>
+        /// <remarks>
+        /// Для массивов <c>double[]</c> элементы выводятся в одну строку, разделённые символом табуляции ('\t').
+        /// Для массива векторов <c>Vector&lt;double&gt;[]</c> вывод производится по компонентам: сначала все первые компоненты векторов, затем все вторые и т.д.; каждая серия компонент занимает отдельную строку.
+        /// Все числовые значения приводятся к типу <c>float</c> и форматируются с использованием <see cref="System.Globalization.CultureInfo.InvariantCulture"/>, чтобы разделителем дробной части была точка.
+        /// Переход к следующему поля данных обозначается переводом строки.
+        /// </remarks>
+        /// <returns>Строка с данными, готовая для записи в текстовый файл.</returns>
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+
+            sb.AppendLine(ToFloatRow(_time));
+            sb.AppendLine(ToFloatRow(_nu));
+            sb.AppendLine(ToFloatRow(_E));
+            sb.AppendLine(ToFloatRow(_H));
+
+            for (int comp = 0; comp < _satelliteMovement[0].Count; comp++)
+            {
+                for (int i = 0; i < _satelliteMovement.Length; i++)
+                    sb.Append(((float)_satelliteMovement[i][comp]).ToString(CultureInfo.InvariantCulture)).Append('\t');
+                sb.AppendLine();
+            }
+
+            return sb.ToString();
+        }
+
+        private static string ToFloatRow(double[] array)
+        {
+            var sb = new StringBuilder();
+            foreach (var x in array)
+                sb.Append(((float)x).ToString(CultureInfo.InvariantCulture)).Append('\t');
+            return sb.ToString().TrimEnd('\t');
         }
     }
 }
